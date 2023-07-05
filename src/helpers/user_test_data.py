@@ -1,5 +1,5 @@
 from src.generators.generator import TestDataGenerator
-from src.utils.utils import Utils
+from src.helpers.file_worker import FileWorker
 from dataclasses import dataclass
 
 
@@ -11,4 +11,4 @@ class UserTestData:
         if self.isRandom:
             self.email, self.password, self.username = TestDataGenerator.generate_user_data()
         else:
-            self.email, self.password, self.username = Utils.get_user_from_file()
+            self.email, self.password, self.username = FileWorker.get_user_from_file()

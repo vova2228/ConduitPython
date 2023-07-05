@@ -48,3 +48,19 @@ class FileWorker:
         workbook = load_workbook(filename=cls.__file_path)
         sheet = workbook.active
         return sheet
+
+    @classmethod
+    def get_user_from_file(cls):
+        sheet = cls.initialize_sheet()
+        filled_rows = cls.count_filled_rows(sheet)
+
+        if filled_rows != 1:
+            index = random.randint(1, filled_rows)
+        else:
+            index = 1
+
+        email = sheet[f'A{index}'].value
+        password = sheet[f'B{index}'].value
+        username = sheet[f'C{index}'].value
+
+        return email, password, username
