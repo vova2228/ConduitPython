@@ -29,3 +29,5 @@ class TestDataGenerator:
     def generate_username(length):
         username = ''.join(random.choice(TestDataGenerator.letters) for i in range(length))
         return username
+
+

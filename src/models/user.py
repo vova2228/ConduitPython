@@ -1,14 +1,22 @@
+from typing import Any
 from dataclasses import dataclass
-from src.generators.generator import TestDataGenerator
-from src.utils.utils import Utils
 
 
 @dataclass
 class User:
-    isRandom: bool
+    email: str
+    username: str
+    bio: str
+    image: str
+    token: str
 
-    def __post_init__(self):
-        if self.isRandom:
-            self.email, self.password, self.username = TestDataGenerator.generate_user_data()
-        else:
-            self.email, self.password, self.username = Utils.read_user_data()
+    @staticmethod
+    def from_dict(obj: Any) -> 'User':
+        _email = str(obj.get("email"))
+        _username = str(obj.get("username"))
+        _bio = str(obj.get("bio"))
+        _image = str(obj.get("image"))
+        _token = str(obj.get("token"))
+        return User(_email, _username, _bio, _image, _token)
+
+
