@@ -1,5 +1,11 @@
 import os
+
+from requests import Response
+
 from src.Clients.base_client import BaseClient
+from src.expected_results.auth import RegistrationNewUser
+from src.helpers.deserializer import Deserializer
+from src.helpers.file_worker import FileWorker
 from src.models.user import User
 
 
@@ -14,9 +20,11 @@ class AuthAPI:
     __current_user_endpont = __base_url + __auth_current_user_path
 
     __client = BaseClient()
+    __deserializer = Deserializer()
 
     @classmethod
     def register_user(cls, user) -> User:
+        print("\nРегистрируем пользователя...")
         email, password, username = user.email, user.password, user.username
         request_body = {
             "user": {
@@ -26,12 +34,14 @@ class AuthAPI:
             }
         }
         response = cls.__client.custom_request("POST", cls.__register_endpoint, json=request_body)
-        response_body = response.json()['user']
-        registered_user = User.from_dict(response_body)
+        print("Пользователь зарегистрирован\n")
+        cls.check_keys_in_auth_response(response)
+        registered_user = cls.__deserializer.deserialize(response.json()['user'], User)
         return registered_user
 
     @classmethod
     def login_user(cls, user) -> User:
+        print("\nЛогинимся...")
         email, password = user.email, user.password
         request_body = {
             "user": {
@@ -40,20 +50,24 @@ class AuthAPI:
             }
         }
         response = cls.__client.custom_request("POST", cls.__login_endpoint, json=request_body)
-        response_body = response.json()['user']
-        authorized_user = User.from_dict(response_body)
+        print("Пользователь авторизован\n")
+        cls.check_keys_in_auth_response(response)
+        authorized_user = cls.__deserializer.deserialize(response.json()['user'], User)
         return authorized_user
 
     @classmethod
     def get_current_user(cls, token) -> User:
+        print("\nПолучаем текущего пользователя...")
         headers = {"Authorization": f'Token {token}'}
         response = cls.__client.custom_request("GET", cls.__current_user_endpont, headers=headers)
-        response_body = response.json()['user']
-        current_user = User.from_dict(response_body)
+        print("Пользователь получен\n")
+        cls.check_keys_in_auth_response(response)
+        current_user = cls.__deserializer.deserialize(response.json()['user'], User)
         return current_user
 
     @classmethod
     def update_user(cls, token, new_email) -> User:
+        print("\nОбновляем пользователя...")
         headers = {"Authorization": f'Token {token}'}
 
         request_body = {
@@ -62,8 +76,19 @@ class AuthAPI:
             }
         }
 
+        old_email = cls.get_current_user(token).email
         response = cls.__client.custom_request("PUT", cls.__current_user_endpont, headers=headers, json=request_body)
-        response_body = response.json()['user']
-        current_user = User.from_dict(response_body)
-        # TODO подумать куда записывать обновленный email
-        return current_user
+        print("Пользователь Обновлен\n")
+        user = cls.__deserializer.deserialize(response.json()['user'], User)
+        was_updated = FileWorker.insert_new_email_for_user(old_email, new_email)
+        if was_updated:
+            print("\nEmail пользователя в файле обновлен\n")
+        else:
+            print("\nEmail не найден в файле\n")
+        return user
+
+    @classmethod
+    def check_keys_in_auth_response(cls, response: Response, keys=RegistrationNewUser.expected_keys):
+        for key in keys:
+            assert key in response.text, f"В ответе сервера нет ключа {key}!!"
+

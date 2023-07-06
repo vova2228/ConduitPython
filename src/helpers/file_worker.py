@@ -4,12 +4,11 @@ from src.generators.generator import TestDataGenerator
 
 
 class FileWorker:
-    __file_path = '../tests/data/registered_users.xlsx'
+    __file_path = '../../tests/data/registered_users.xlsx'
 
     @classmethod
     def insert_new_user_to_file(cls, users_count: int):
-        workbook = load_workbook(filename=cls.__file_path)
-        sheet = workbook.active
+        sheet = cls.initialize_sheet()
 
         filled_rows = cls.count_filled_rows(sheet)
 
@@ -27,7 +26,7 @@ class FileWorker:
                 cls.__add_user_to_sheet(sheet, i, random_length)
                 i += 1
 
-        workbook.save(cls.__file_path)
+        sheet.parent.save(cls.__file_path)
 
     @classmethod
     def count_filled_rows(cls, sheet):
@@ -64,3 +63,20 @@ class FileWorker:
         username = sheet[f'C{index}'].value
 
         return email, password, username
+
+    @classmethod
+    def insert_new_email_for_user(cls, old_email, new_email):
+        sheet = cls.initialize_sheet()
+        filled_rows = cls.count_filled_rows(sheet)
+
+        for i in range(1, filled_rows + 1):
+            current_email = sheet[f'A{i}'].value
+            if current_email == old_email:
+                sheet[f'A{i}'].value = new_email
+                sheet.parent.save(cls.__file_path)
+                return True
+            else:
+                return False
+
+
+
