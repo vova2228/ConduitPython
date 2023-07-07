@@ -18,5 +18,3 @@ class User:
         _image = str(obj.get("image"))
         _token = str(obj.get("token"))
         return User(_email, _username, _bio, _image, _token)
-
-

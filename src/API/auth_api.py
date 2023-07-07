@@ -1,11 +1,11 @@
 import os
 
 from requests import Response
-
 from src.Clients.base_client import BaseClient
 from src.expected_results.auth import RegistrationNewUser
 from src.helpers.deserializer import Deserializer
 from src.helpers.file_worker import FileWorker
+from src.helpers.user_test_data import UserTestData
 from src.models.user import User
 
 
@@ -23,14 +23,15 @@ class AuthAPI:
     __deserializer = Deserializer()
 
     @classmethod
-    def register_user(cls, user) -> User:
+    def register_user(cls, user: UserTestData) -> User:
         print("\nРегистрируем пользователя...")
         email, password, username = user.email, user.password, user.username
+        # TODO сделать негативные и позитивные тесты для авторизации
         request_body = {
             "user": {
-                "email": email,
-                "password": password,
-                "username": username
+                "email": email if email else None,
+                "password": password if password else None,
+                "username": username if username else None
             }
         }
         response = cls.__client.custom_request("POST", cls.__register_endpoint, json=request_body)
