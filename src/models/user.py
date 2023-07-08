@@ -1,8 +1,8 @@
-
-from typing import Any, Optional
+from typing import Any, Optional, Union
 from dataclasses import dataclass
 from pydantic import BaseModel
 from generators.generator import TestDataGenerator
+from helpers.file_worker import FileWorker
 
 
 @dataclass
@@ -23,16 +23,44 @@ class User:
         return User(_email, _username, _bio, _image, _token)
 
 
-class UserRequestParams(BaseModel):
-    email: Optional[str] = TestDataGenerator.generate_user_data()[0]
-    password: Optional[str] = TestDataGenerator.generate_user_data()[1]
-    username: Optional[str] = TestDataGenerator.generate_user_data()[2]
+class RandomUser(BaseModel):
+    email: Optional[str] = None
+    password: Optional[str] = None
+    username: Optional[str] = None
+
+    @staticmethod
+    def create_random_user():
+        return RandomUser(
+            email=TestDataGenerator.generate_email(),
+            password=TestDataGenerator.generate_password(),
+            username=TestDataGenerator.generate_username()
+        )
 
 
-class UserRequest(BaseModel):
-    user: UserRequestParams = UserRequestParams()
+class RegisteredUser(BaseModel):
+    email: Optional[str]
+    password: Optional[str]
+    username: Optional[str]
+
+    @staticmethod
+    def get_user_from_file():
+        return RegisteredUser(
+            email=FileWorker.get_user_from_file()[0],
+            password=FileWorker.get_user_from_file()[1],
+            username=FileWorker.get_user_from_file()[2]
+        )
 
 
-def test_register_user():
-    request_body = UserRequest()
-    print(request_body.model_dump_json())
+class Request(BaseModel):
+    user: Union[RandomUser, RegisteredUser]
+
+    def create_body(self) -> str:
+        return self.model_dump_json()
+
+
+class UserRequest:
+    def __init__(self, is_random: bool):
+        if is_random:
+            self.body = Request(user=RandomUser.create_random_user()).create_body()
+        else:
+            self.body = Request(user=RegisteredUser.get_user_from_file()).create_body()

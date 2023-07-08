@@ -1,3 +1,4 @@
+import json
 import os
 
 from requests import Response
@@ -5,8 +6,7 @@ from src.Clients.base_client import BaseClient
 from src.expected_results.auth import RegistrationNewUser
 from src.helpers.deserializer import Deserializer
 from src.helpers.file_worker import FileWorker
-from src.helpers.user_test_data import UserTestData
-from src.models.user import User
+from src.models.user import User, UserRequest
 
 
 class AuthAPI:
@@ -23,17 +23,9 @@ class AuthAPI:
     __deserializer = Deserializer()
 
     @classmethod
-    def register_user(cls, user: UserTestData) -> User:
+    def register_user(cls, user: UserRequest) -> User:
         print("\nРегистрируем пользователя...")
-        email, password, username = user.email, user.password, user.username
-        # TODO сделать негативные и позитивные тесты для авторизации
-        request_body = {
-            "user": {
-                "email": email if email else None,
-                "password": password if password else None,
-                "username": username if username else None
-            }
-        }
+        request_body = json.loads(user.body)
         response = cls.__client.custom_request("POST", cls.__register_endpoint, json=request_body)
         print("Пользователь зарегистрирован\n")
         cls.check_keys_in_auth_response(response)
@@ -41,15 +33,9 @@ class AuthAPI:
         return registered_user
 
     @classmethod
-    def login_user(cls, user) -> User:
+    def login_user(cls, user: UserRequest) -> User:
         print("\nЛогинимся...")
-        email, password = user.email, user.password
-        request_body = {
-            "user": {
-                "email": email,
-                "password": password
-            }
-        }
+        request_body = json.loads(user.body)
         response = cls.__client.custom_request("POST", cls.__login_endpoint, json=request_body)
         print("Пользователь авторизован\n")
         cls.check_keys_in_auth_response(response)
