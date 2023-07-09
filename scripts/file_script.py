@@ -4,7 +4,7 @@ import requests
 from openpyxl import load_workbook
 
 letters = string.ascii_lowercase
-file_path = "../tests/data/registered_users.xlsx"
+file_path = "./tests/data/registered_users.xlsx"
 register_endpoint = "https://api.realworld.io/api/users"
 login_endpoint = "https://api.realworld.io/api/users/login"
 

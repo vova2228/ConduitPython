@@ -4,7 +4,7 @@ from src.generators.generator import TestDataGenerator
 
 
 class FileWorker:
-    __file_path = '../../tests/data/registered_users.xlsx'
+    __file_path = 'C:/Users/narut/Desktop/Idea/ConduitPython/tests/data/registered_users.xlsx'
 
     @classmethod
     def insert_new_user_to_file(cls, users_count: int):
@@ -53,14 +53,14 @@ class FileWorker:
         sheet = cls.initialize_sheet()
         filled_rows = cls.count_filled_rows(sheet)
 
-        if filled_rows != 1:
+        if filled_rows > 1:
             index = random.randint(1, filled_rows)
         else:
             index = 1
 
-        email = sheet[f'A{index}'].value
-        password = sheet[f'B{index}'].value
-        username = sheet[f'C{index}'].value
+        email = sheet.cell(row=index, column=1).value
+        password = sheet.cell(row=index, column=2).value
+        username = sheet.cell(row=index, column=3).value
 
         return email, password, username
 
