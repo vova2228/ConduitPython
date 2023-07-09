@@ -125,6 +125,7 @@ class TestAuth:
         with step("Авторизуемся"):
             login_user, response = self.auth_api.login_user(user)
             token = login_user.token
+            print(token)
 
         with step("Генерируем новый email"):
             user_for_update = UserRequest(RequestType.update)

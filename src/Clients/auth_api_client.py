@@ -1,7 +1,6 @@
 import os
 
 from requests import Response
-
 from src.Clients.base_client import BaseClient
 
 
@@ -34,6 +33,5 @@ class AuthApiClient(BaseClient):
 
     @classmethod
     def updade_user(cls, request_body=None, request_headers=None) -> Response:
-        response = cls.__client.custom_request("PUT", cls.__current_user_endpont, headers=request_headers,
-                                               json=request_body)
+        response = cls.__client.custom_request("PUT", cls.__current_user_endpont, headers=request_headers, json=request_body)
         return response
