@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import Any, List
 
+
 @dataclass
 class Author:
     username: str
@@ -42,8 +43,9 @@ class Article:
         _favorited = bool(obj.get("favorited"))
         _favoritesCount = int(obj.get("favoritesCount"))
         _author = Author.from_dict(obj.get("author"))
-        return Article(_slug, _title, _description, _body, _tagList, _createdAt, _updatedAt, _favorited,
-                       _favoritesCount, _author)
+        return Article(
+            _slug, _title, _description, _body, _tagList, _createdAt, _updatedAt, _favorited,
+            _favoritesCount, _author)
 
 
 @dataclass

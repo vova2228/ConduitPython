@@ -11,8 +11,11 @@ class ArticlesApi:
     __deserializer = Deserializer()
 
     @classmethod
-    def get_articles(cls, token, limit=10, offset=0) -> tuple[Optional[ArticleBody], Response]:
-        print("\nПолучаем статью по токену...")
+    def get_articles(cls, token=None, limit=10, offset=0) -> tuple[Optional[ArticleBody], Response]:
+        if token is not None:
+            print(f"\nПолучаем статьи по токену с параметрами limit = {limit} и offset = {offset}...")
+        else:
+            print(f"\nПолучаем статьи с параметрами limit = {limit} и offset = {offset}...")
         headers = {"Authorization": f'Token {token}'}
         response = cls.__client.get_article(request_headers=headers, limit=limit, offset=offset)
         allure.attach(str(response.text), 'response', allure.attachment_type.TEXT)
