@@ -1,5 +1,7 @@
 from dataclasses import dataclass
-from typing import Any, List
+from typing import Any, List, Optional, Union
+from pydantic import BaseModel
+from src.helpers.file_worker import FileWorker
 
 
 @dataclass
@@ -50,11 +52,40 @@ class Article:
 
 @dataclass
 class ArticleBody:
-    articles: List[Article]
-    articlesCount: int
+    articles: Union[List[Article], Article]
+    articlesCount: int | None
 
     @staticmethod
     def from_dict(obj: Any) -> 'ArticleBody':
-        _articles = [Article.from_dict(y) for y in obj.get("articles")]
-        _articlesCount = int(obj.get("articlesCount"))
-        return ArticleBody(_articles, _articlesCount)
+        if isinstance(obj.get("articles"), list):
+            articles = [Article.from_dict(article) for article in obj.get("articles")]
+        else:
+            articles = Article.from_dict(obj.get("article"))
+        articlesCount = obj.get("articlesCount")
+        if articlesCount is not None:
+            articlesCount = int(articlesCount)
+        return ArticleBody(articles, articlesCount)
+
+
+class ArticleText(BaseModel):
+    title: Optional[str]
+    description: Optional[str]
+    body: Optional[str]
+    tagList: Optional[List[str]]
+
+    @staticmethod
+    def get_article_from_file():
+        article_info = FileWorker.get_article_from_file()
+        return ArticleText(
+            title=article_info[0],
+            description=article_info[1],
+            body=article_info[2],
+            tagList=article_info[3]
+        )
+
+
+class ArticleRequestBody(BaseModel):
+    article: Optional[ArticleText] = ArticleText.get_article_from_file()
+
+    def create_body(self) -> str:
+        return self.model_dump_json()

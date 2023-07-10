@@ -32,6 +32,6 @@ class AuthApiClient(BaseClient):
         return response
 
     @classmethod
-    def updade_user(cls, request_body=None, request_headers=None) -> Response:
+    def update_user(cls, request_body=None, request_headers=None) -> Response:
         response = cls.__client.custom_request("PUT", cls.__current_user_endpont, headers=request_headers, json=request_body)
         return response

@@ -1,14 +1,13 @@
 import random
-
 import allure
 import pytest
 
-from API.authorization_api.auth_api import AuthAPI
-from articles.articlesTests import ArticlesTests
-from expected_results.articles_expected_results import SuccesfullGetArticle
+from src.API.authorization_api.auth_api import AuthAPI
+from tests.articles.articlesTests import ArticlesTests
+from src.expected_results.articles_expected_results import *
 from src.API.authorization_api.request_type import RequestType
 from src.API.articles_api.articles_api import ArticlesApi
-from utils.utils import Utils
+from src.utils.utils import Utils
 
 step = allure.step
 utils = Utils()
@@ -38,7 +37,7 @@ class TestArticles:
 
         with step("Проверяем, что тело ответа имеет корректные данные"):
             self.tests.check_articles_response(
-                response, SuccesfullGetArticle.expected_keys, SuccesfullGetArticle.status_code)
+                response, Successfullgetarticle.expected_keys, Successfullgetarticle.status_code)
 
     @allure.title("Получение статей без токена")
     @pytest.mark.order(2)
@@ -51,13 +50,13 @@ class TestArticles:
 
         with step("Проверяем, что тело ответа имеет корректные данные"):
             self.tests.check_articles_response(
-                response, SuccesfullGetArticle.expected_keys, SuccesfullGetArticle.status_code)
+                response, Successfullgetarticle.expected_keys, Successfullgetarticle.status_code)
 
     @allure.title("Проверка количества статей в ответе")
     @pytest.mark.order(3)
     def test_articles_count(self):
-        with step("Получаем статьи"):
-            limit = random.randint(1, 100)
+        limit = random.randint(1, 100)
+        with step(f"Получаем статьи c limit = {limit}"):
             articles, response = self.articles_api.get_articles(limit=limit)
 
         with step("Проверяем, что тело ответа в формате JSON"):
@@ -65,8 +64,30 @@ class TestArticles:
 
         with step("Проверяем, что тело ответа имеет корректные данные"):
             self.tests.check_articles_response(
-                response, SuccesfullGetArticle.expected_keys, SuccesfullGetArticle.status_code)
+                response, Successfullgetarticle.expected_keys, Successfullgetarticle.status_code)
 
         with step(f"Проверяем, что количество статей в ответе соответствует limit = {limit}"):
             actual_count = len(articles.articles)
-            self.tests.check_reponse_article_count(limit, actual_count)
+            self.tests.check_response_article_count(limit, actual_count)
+
+
+    def test_create_article(self):
+        with step("Получаем пользователя из файла"):
+            user = utils.get_user(RequestType.login, is_random=False)
+
+        with step("Авторизуемся и получаем токен"):
+            login_user, response = self.auth_api.login_user(user)
+            token = login_user.token
+
+        with step("Создаем статью по токену"):
+            articles, response = self.articles_api.post_articles(token)
+            slug = articles.articles.slug
+
+        with step("Проверяем, что тело ответа имеет корректные данные"):
+            self.tests.check_articles_response(
+                response, SuccessfullPostArticle.expected_keys, SuccessfullPostArticle.status_code)
+
+        with step("Удаляем статью"):
+           response = self.articles_api.delete_article(token=token, slug=slug)
+           self.tests.check_articles_response(
+               response, SuccessfullDeleteArticle.expected_text, SuccessfullDeleteArticle.status_code)

@@ -62,16 +62,16 @@ class AuthAPI:
         headers = {"Authorization": f'Token {token}'}
         request_body = json.loads(user.body)
         old_email = cls.get_current_user(token)[0].email
-        response = cls.__client.updade_user(request_body, request_headers=headers)
+        response = cls.__client.update_user(request_body, request_headers=headers)
         allure.attach(str(response.text), 'response', allure.attachment_type.TEXT)
         try:
             user = cls.__deserializer.deserialize(response.json()['user'], UserBody)
             print("Пользователь Обновлен\n")
             was_updated = FileWorker.insert_new_email_for_user(old_email, request_body['user']['email'])
             if was_updated:
-                print("Email пользователя в файле обновлен\n")
+                print(f"Email пользователя {old_email} в файле обновлен на {request_body['user']['email']}\n")
             else:
-                print("Email не найден в файле\n")
+                print(f"Email {old_email} не найден в файле\n")
             return user, response
         except KeyError:
             print("Пользователь не был обновлен")

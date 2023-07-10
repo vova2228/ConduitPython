@@ -5,10 +5,11 @@ from tests.authorization.authTests import AuthTest
 from src.API.authorization_api.request_type import RequestType
 from src.expected_results.auth_expected_results import *
 from src.API.authorization_api.auth_api import AuthAPI
-from utils.utils import Utils
+from src.utils.utils import Utils
 
 step = allure.step
 utils = Utils()
+
 
 @allure.suite("Тесты авторизации")
 class TestAuth:
@@ -95,7 +96,8 @@ class TestAuth:
 
         with step("Проверяем, что тело ответа имеет корректные данные"):
             self.tests.check_auth_res_body(login_user, current_user)
-            self.tests.check_auth_response(response, SuccesfullRegistration.expected_keys, SuccesfullRegistration.status_code)
+            self.tests.check_auth_response(response, SuccesfullRegistration.expected_keys,
+                                           SuccesfullRegistration.status_code)
 
     @allure.title("Получение текущего пользователя после регистрации")
     @pytest.mark.order(6)
@@ -115,7 +117,8 @@ class TestAuth:
 
         with step("Проверяем, что тело ответа имеет корректные данные"):
             self.tests.check_auth_res_body(registered_user, current_user)
-            self.tests.check_auth_response(response, SuccesfullRegistration.expected_keys, SuccesfullRegistration.status_code)
+            self.tests.check_auth_response(response, SuccesfullRegistration.expected_keys,
+                                           SuccesfullRegistration.status_code)
 
     @allure.title("Обновление email пользователя")
     @pytest.mark.order(7)

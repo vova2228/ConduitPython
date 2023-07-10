@@ -1,7 +1,7 @@
 import random
 
-from API.authorization_api.request_type import RequestType
-from models.user import UserRequest
+from src.API.authorization_api.request_type import RequestType
+from src.models.user import UserRequest
 
 
 class Utils:
