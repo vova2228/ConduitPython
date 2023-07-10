@@ -48,11 +48,11 @@ class ArticlesApi:
 
     @classmethod
     def delete_article(cls, slug=None, token=None):
-        if token is not None:
-            print(f"\nУдаляем статью с токеном и slug = '{slug}'...")
-        else:
-            print(f"\nУдаляем статью без токена и slug = '{slug}'...")
         headers = {"Authorization": f'Token {token}'}
         response = cls.__client.delete_article(request_headers=headers, slug=slug)
-        allure.attach(str(response.text), 'response', allure.attachment_type.TEXT)
+        if response.status_code in [200, 204]:
+            print(f"Статья {slug} удалена")
+        else:
+            print(f"Ошибка при удалении статьи {slug}: статус код ответа = {response.status_code}")
+        allure.attach(str(response.text), 'esponse', allure.attachment_type.TEXT)
         return response
