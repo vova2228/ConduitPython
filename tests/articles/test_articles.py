@@ -10,6 +10,8 @@ from src.API.articles_api.articles_api import ArticlesApi
 from utils.utils import Utils
 
 step = allure.step
+utils = Utils()
+
 
 @allure.suite("Тесты статей")
 class TestAuth:
@@ -28,14 +30,14 @@ class TestAuth:
             token = login_user.token
 
         with step("Получаем статью по токену"):
-            articles, response = self.articles_api.get_article(token, limit=5)
+            articles, response = self.articles_api.get_articles(token, limit=1)
 
         with step("Проверяем, что тело ответа в формате JSON"):
             self.tests.check_response_is_json(response)
 
         with step("Проверяем, что тело ответа имеет корректные данные"):
-            self.tests.check_auth_response(response, SuccesfullGetArticle.expected_keys, SuccesfullGetArticle.status_code)
+            self.tests.check_auth_response(
+                response, SuccesfullGetArticle.expected_keys, SuccesfullGetArticle.status_code)
 
             # ran_article = Utils.get_random_article(articles.articles)
             # print(ran_article)
-

@@ -4,10 +4,11 @@ import pytest
 from tests.authorization.authTests import AuthTest
 from src.API.authorization_api.request_type import RequestType
 from src.expected_results.auth_expected_results import *
-from src.models.user import UserRequest
 from src.API.authorization_api.auth_api import AuthAPI
+from utils.utils import Utils
 
 step = allure.step
+utils = Utils()
 
 @allure.suite("Тесты авторизации")
 class TestAuth:
@@ -18,7 +19,7 @@ class TestAuth:
     @pytest.mark.order(1)
     def test_new_user_register(self):
         with step("Генерируем рандомного пользователя"):
-            user = UserRequest(RequestType.register, is_random=True)
+            user = utils.get_user(RequestType.register, is_random=True)
 
         with step("Регистрируем пользователя"):
             registered_user, response = self.auth_api.register_user(user)
@@ -34,7 +35,7 @@ class TestAuth:
     @pytest.mark.order(2)
     def test_old_user_register(self):
         with step("Получаем пользователя из файла"):
-            user = UserRequest(RequestType.register, is_random=False)
+            user = utils.get_user(RequestType.register, is_random=False)
             
         with step("Пытаемся зарегистрировать пользователя"):
             registered_user, response = self.auth_api.register_user(user)
@@ -50,7 +51,7 @@ class TestAuth:
     @pytest.mark.order(3)
     def test_old_user_login(self):
         with step("Получаем пользователя из файла"):
-            user = UserRequest(RequestType.login, is_random=False)
+            user = utils.get_user(RequestType.login, is_random=False)
 
         with step("Авторизуемся"):
             login_user, response = self.auth_api.login_user(user)
@@ -65,7 +66,7 @@ class TestAuth:
     @pytest.mark.order(4)
     def test_new_user_login(self):
         with step("Генерируем рандомного пользователя"):
-            user = UserRequest(RequestType.login, is_random=True)
+            user = utils.get_user(RequestType.login, is_random=True)
 
         with step("Пытаемся авторизоваться"):
             login_user, response = self.auth_api.login_user(user)
@@ -80,7 +81,7 @@ class TestAuth:
     @pytest.mark.order(5)
     def test_get_current_user_after_login(self):
         with step("Получаем пользователя из файла"):
-            user = UserRequest(RequestType.login, is_random=False)
+            user = utils.get_user(RequestType.login, is_random=False)
 
         with step("Авторизуемся"):
             login_user, response = self.auth_api.login_user(user)
@@ -100,7 +101,7 @@ class TestAuth:
     @pytest.mark.order(6)
     def test_get_current_user_after_register(self):
         with step("Генерируем рандомного пользователя"):
-            user = UserRequest(RequestType.register, is_random=True)
+            user = utils.get_user(RequestType.register, is_random=True)
 
         with step("Регистрируем пользователя"):
             registered_user, response = self.auth_api.register_user(user)
@@ -120,15 +121,14 @@ class TestAuth:
     @pytest.mark.order(7)
     def test_update_user(self):
         with step("Получаем пользователя из файла"):
-            user = UserRequest(RequestType.login, is_random=False)
+            user = utils.get_user(RequestType.login, is_random=False)
 
         with step("Авторизуемся"):
             login_user, response = self.auth_api.login_user(user)
             token = login_user.token
-            print(token)
 
         with step("Генерируем новый email"):
-            user_for_update = UserRequest(RequestType.update)
+            user_for_update = utils.get_user(RequestType.update)
 
         with step("Обновляем пользователя"):
             updated_user, response = self.auth_api.update_user(token, user_for_update)

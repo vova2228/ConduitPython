@@ -21,8 +21,9 @@ class AuthAPI:
         allure.attach(str(response.text), 'response', allure.attachment_type.TEXT)
         try:
             registered_user = cls.__deserializer.deserialize(response.json()['user'], UserBody)
-            print("Пользователь зарегистрирован\n")
-            return registered_user, response
+            if type(registered_user) is UserBody:
+                print("Пользователь зарегистрирован\n")
+                return registered_user, response
         except KeyError:
             print("Пользователь не был зарегистрирован\n")
             return None, response

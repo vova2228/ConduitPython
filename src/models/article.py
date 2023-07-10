@@ -1,6 +1,21 @@
 from dataclasses import dataclass
 from typing import Any, List
 
+@dataclass
+class Author:
+    username: str
+    bio: str
+    image: str
+    following: bool
+
+    @staticmethod
+    def from_dict(obj: Any) -> 'Author':
+        _username = str(obj.get("username"))
+        _bio = str(obj.get("bio"))
+        _image = str(obj.get("image"))
+        _following = bool(obj.get("following"))
+        return Author(_username, _bio, _image, _following)
+
 
 @dataclass
 class Article:
@@ -13,6 +28,7 @@ class Article:
     updatedAt: str
     favorited: bool
     favoritesCount: int
+    author: Author
 
     @staticmethod
     def from_dict(obj: Any) -> 'Article':
@@ -25,8 +41,9 @@ class Article:
         _updatedAt = str(obj.get("updatedAt"))
         _favorited = bool(obj.get("favorited"))
         _favoritesCount = int(obj.get("favoritesCount"))
+        _author = Author.from_dict(obj.get("author"))
         return Article(_slug, _title, _description, _body, _tagList, _createdAt, _updatedAt, _favorited,
-                       _favoritesCount)
+                       _favoritesCount, _author)
 
 
 @dataclass

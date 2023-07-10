@@ -11,7 +11,7 @@ class ArticlesApi:
     __deserializer = Deserializer()
 
     @classmethod
-    def get_article(cls, token, limit=10, offset=0) -> tuple[Optional[ArticleBody], Response]:
+    def get_articles(cls, token, limit=10, offset=0) -> tuple[Optional[ArticleBody], Response]:
         print("\nПолучаем статью по токену...")
         headers = {"Authorization": f'Token {token}'}
         response = cls.__client.get_article(request_headers=headers, limit=limit, offset=offset)

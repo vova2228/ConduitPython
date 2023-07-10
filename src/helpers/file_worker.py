@@ -4,7 +4,7 @@ from src.generators.generator import TestDataGenerator
 
 
 class FileWorker:
-    __file_path = 'C:/Users/narut/Desktop/Idea/ConduitPython/tests/data/registered_users.xlsx'
+    __file_path = '../tests/data/registered_users.xlsx'
 
     @classmethod
     def insert_new_user_to_file(cls, users_count: int):
