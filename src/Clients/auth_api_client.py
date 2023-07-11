@@ -16,22 +16,18 @@ class AuthApiClient(BaseClient):
 
     __client = BaseClient()
 
-    @classmethod
-    def register(cls, request_body=None, request_headers=None) -> Response:
-        response = cls.__client.custom_request("POST", cls.__register_endpoint, json=request_body)
+    def register(self, request_body=None, request_headers=None) -> Response:
+        response = self.__client.custom_request("POST", self.__register_endpoint, json=request_body)
         return response
 
-    @classmethod
-    def login(cls, request_body=None, request_headers=None) -> Response:
-        response = cls.__client.custom_request("POST", cls.__login_endpoint, json=request_body)
+    def login(self, request_body=None, request_headers=None) -> Response:
+        response = self.__client.custom_request("POST", self.__login_endpoint, json=request_body)
         return response
 
-    @classmethod
-    def get_user(cls, request_body=None, request_headers=None) -> Response:
-        response = cls.__client.custom_request("GET", cls.__current_user_endpont, headers=request_headers)
+    def get_user(self, request_body=None, request_headers=None) -> Response:
+        response = self.__client.custom_request("GET", self.__current_user_endpont, headers=request_headers)
         return response
 
-    @classmethod
-    def update_user(cls, request_body=None, request_headers=None) -> Response:
-        response = cls.__client.custom_request("PUT", cls.__current_user_endpont, headers=request_headers, json=request_body)
+    def update_user(self, request_body=None, request_headers=None) -> Response:
+        response = self.__client.custom_request("PUT", self.__current_user_endpont, headers=request_headers, json=request_body)
         return response

@@ -14,19 +14,18 @@ class ArticlesClient(BaseClient):
 
     __client = BaseClient()
 
-    @classmethod
-    def get_article(cls, limit, offset, request_body=None, request_headers=None) -> Response:
+    def get_article(self, limit, offset, request_body=None, request_headers=None) -> Response:
         query_params = {"limit": limit, "offset": offset}
-        response = cls.__client.custom_request("GET", cls.__get_articles_endpoint, params=query_params)
+        response = self.__client.custom_request("GET", self.__get_articles_endpoint, params=query_params)
         return response
 
-    @classmethod
-    def post_article(cls, request_body=None, request_headers=None):
-        response = cls.__client.custom_request("POST", cls.__get_articles_endpoint, headers=request_headers,
-                                               json=request_body)
+    def post_article(self, request_body=None, request_headers=None):
+        response = self.__client.custom_request(
+            "POST", self.__get_articles_endpoint, headers=request_headers,
+            json=request_body)
         return response
 
-    @classmethod
-    def delete_article(cls, slug, request_body=None, request_headers=None):
-        response = cls.__client.custom_request("DELETE", f'{cls.__get_articles_endpoint}/{slug}', headers=request_headers)
+    def delete_article(self, slug, request_body=None, request_headers=None):
+        response = self.__client.custom_request(
+            "DELETE", f'{self.__get_articles_endpoint}/{slug}', headers=request_headers)
         return response

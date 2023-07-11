@@ -13,14 +13,13 @@ class AuthAPI:
     __client = AuthApiClient()
     __deserializer = Deserializer()
 
-    @classmethod
-    def register_user(cls, user: UserRequest) -> tuple[Optional[UserBody], Response]:
+    def register_user(self, user: UserRequest) -> tuple[Optional[UserBody], Response]:
         print("\nРегистрируем пользователя...")
         request_body = json.loads(user.body)
-        response = cls.__client.register(request_body)
+        response = self.__client.register(request_body)
         allure.attach(str(response.text), 'response', allure.attachment_type.TEXT)
         try:
-            registered_user = cls.__deserializer.deserialize(response.json()['user'], UserBody)
+            registered_user = self.__deserializer.deserialize(response.json()['user'], UserBody)
             if type(registered_user) is UserBody:
                 print("Пользователь зарегистрирован\n")
                 return registered_user, response
@@ -28,14 +27,13 @@ class AuthAPI:
             print("Пользователь не был зарегистрирован\n")
             return None, response
 
-    @classmethod
-    def login_user(cls, user: UserRequest) -> tuple[Optional[UserBody], Response]:
+    def login_user(self, user: UserRequest) -> tuple[Optional[UserBody], Response]:
         print("\nЛогинимся...")
         request_body = json.loads(user.body)
-        response = cls.__client.login(request_body)
+        response = self.__client.login(request_body)
         allure.attach(str(response.text), 'response', allure.attachment_type.TEXT)
         try:
-            authorized_user: UserBody = cls.__deserializer.deserialize(response.json()['user'], UserBody)
+            authorized_user: UserBody = self.__deserializer.deserialize(response.json()['user'], UserBody)
             print("Пользователь авторизован\n")
             return authorized_user, response
         except KeyError:
@@ -56,16 +54,15 @@ class AuthAPI:
             print("Пользователь не был авторизован")
             return None, response
 
-    @classmethod
-    def update_user(cls, token, user: UserRequest) -> tuple[Optional[UserBody], Response]:
+    def update_user(self, token, user: UserRequest) -> tuple[Optional[UserBody], Response]:
         print("\nОбновляем пользователя...")
         headers = {"Authorization": f'Token {token}'}
         request_body = json.loads(user.body)
-        old_email = cls.get_current_user(token)[0].email
-        response = cls.__client.update_user(request_body, request_headers=headers)
+        old_email = self.get_current_user(token)[0].email
+        response = self.__client.update_user(request_body, request_headers=headers)
         allure.attach(str(response.text), 'response', allure.attachment_type.TEXT)
         try:
-            user = cls.__deserializer.deserialize(response.json()['user'], UserBody)
+            user = self.__deserializer.deserialize(response.json()['user'], UserBody)
             print("Пользователь Обновлен\n")
             was_updated = FileWorker.insert_new_email_for_user(old_email, request_body['user']['email'])
             if was_updated:

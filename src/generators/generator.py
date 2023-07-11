@@ -5,11 +5,10 @@ import string
 class TestDataGenerator:
     letters = string.ascii_lowercase
 
-    @classmethod
-    def generate_user_data(cls, length=8):
-        email = cls.generate_email(length)
-        password = cls.generate_password(length)
-        username = cls.generate_username(length)
+    def generate_user_data(self, length=8):
+        email = self.generate_email(length)
+        password = self.generate_password(length)
+        username = self.generate_username(length)
         return email, password, username
 
     @classmethod
