@@ -27,15 +27,16 @@ class ArticlesApi:
             print(f"Something went wrong. Could not get the article. Response status code = {response.status_code}")
             return None, response
 
-    def get_articles_by_author(self, author):
-        response = self.__client.get_article_by_author(author)
+    def get_articles_by_author(self, author, token) -> tuple[Optional[ArticleBody], Response]:
+        headers = {"Authorization": f'Token {token}'}
+        response = self.__client.get_article_by_author(author, headers)
         allure.attach(str(response.text), 'response', allure.attachment_type.TEXT)
         try:
             articles = self.__deserializer.deserialize(response.json(), ArticleBody)
-            print(f"Articles by author {author} received\n")
+            print(f"Articles by author ''{author}'' received\n")
             return articles, response
         except KeyError:
-            print(f"Something went wrong. Could not get articles by author {author}. Response status code = {response.status_code}")
+            print(f"Something went wrong. Could not get articles by author ''{author}''. Response status code = {response.status_code}")
             return None, response
 
     def post_articles(self, auth_token=None, article_data: ArticleRequestBody = ArticleRequestBody()) -> tuple[Optional[ArticleBody], Response]:
@@ -59,7 +60,7 @@ class ArticlesApi:
         headers = {"Authorization": f'Token {token}'}
         response = self.__client.delete_article(request_headers=headers, slug=slug)
         if response.status_code in [200, 204]:
-            print(f"Article {slug} deleted")
+            print(f"Article ''{slug}'' deleted")
         else:
             print(f"Error deleting article {slug}: response status code = {response.status_code}")
         allure.attach(str(response.text), 'response', allure.attachment_type.TEXT)

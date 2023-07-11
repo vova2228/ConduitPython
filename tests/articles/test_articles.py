@@ -39,7 +39,6 @@ class TestArticles:
             tests.check_articles_response(
                 response, Successfullgetarticle.expected_keys, Successfullgetarticle.status_code)
 
-
     @allure.title("Getting articles without a token")
     @pytest.mark.order(2)
     def test_get_articles(self):
@@ -52,7 +51,6 @@ class TestArticles:
         with step("Check that the response body has valid data"):
             tests.check_articles_response(
                 response, Successfullgetarticle.expected_keys, Successfullgetarticle.status_code)
-
 
     @allure.title("Checking the number of articles in the response")
     @pytest.mark.order(3)
@@ -72,7 +70,6 @@ class TestArticles:
             actual_count = len(articles.articles)
             tests.check_response_article_count(limit, actual_count)
 
-
     @allure.title("Checking article creation")
     @pytest.mark.order(4)
     def test_create_article(self):
@@ -82,6 +79,7 @@ class TestArticles:
         with step("Log in and get the token"):
             login_user, response = auth_api.login_user(user)
             token = login_user.token
+            author = login_user.username
 
         with step("Create an article by token"):
             articles, response = articles_api.post_articles(token)
@@ -96,10 +94,12 @@ class TestArticles:
             tests.check_articles_response(
                 response, SuccessfullDeleteArticle.expected_text, SuccessfullDeleteArticle.status_code)
 
-    @allure.title("Получение статьи по имени автора")
+        with step("Check article was deleted"):
+            tests.check_article_was_deleted(author, token)
+
+    @allure.title("Get article by author name")
     @pytest.mark.order(5)
     def test_get_articles_by_author(self):
-
         with step("Get the user from the file"):
             user = utils.get_user(RequestType.login, is_random=False)
 
@@ -113,8 +113,7 @@ class TestArticles:
             slug = articles.articles.slug
 
         with step('Get articles by author name'):
-            articles_by_author, response = articles_api.get_articles_by_author(author)
-            print(response)
+            articles_by_author, response = articles_api.get_articles_by_author(author, token)
 
         with step("Check that the response body has valid data"):
             tests.check_articles_response(
@@ -124,3 +123,6 @@ class TestArticles:
             response = articles_api.delete_article(token=token, slug=slug)
             tests.check_articles_response(
                 response, SuccessfullDeleteArticle.expected_text, SuccessfullDeleteArticle.status_code)
+
+        with step("Check article was deleted"):
+            tests.check_article_was_deleted(author, token)

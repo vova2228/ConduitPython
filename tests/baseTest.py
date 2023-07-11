@@ -1,3 +1,4 @@
+import json
 
 class BaseTest:
     def check_response_is_correct(self, response):
@@ -9,3 +10,7 @@ class BaseTest:
 
     def check_response_is_json(self, response):
         assert response.headers.get('Content-Type') == 'application/json; charset=utf-8', "Response is not in JSON format"
+        try:
+            json.loads(response.text)
+        except ValueError:
+            assert False, "Response body is not valid JSON format"
