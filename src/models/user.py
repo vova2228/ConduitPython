@@ -1,4 +1,4 @@
-from typing import Any, Optional
+from typing import Any, Optional, Union
 from dataclasses import dataclass
 from pydantic import BaseModel
 from src.API.authorization_api.request_type import RequestType
@@ -46,25 +46,19 @@ class UserRequestModel(BaseModel):
             username=user_info[2]
         )
 
-    @staticmethod
-    def get_new_email():
-        return UserRequestModel(
-            email=TestDataGenerator.generate_email()
-        )
 
-
-class UpdateUser(BaseModel):
+class UpdateUserRequestModel(BaseModel):
     email: Optional[str]
 
     @staticmethod
     def get_new_email():
-        return UpdateUser(
+        return UpdateUserRequestModel(
             email=TestDataGenerator.generate_email()
         )
 
 
 class RequestModel(BaseModel):
-    user: UserRequestModel
+    user: Union[UserRequestModel, UpdateUserRequestModel]
 
     def create_body(self) -> str:
         return self.model_dump_json()
@@ -73,7 +67,7 @@ class RequestModel(BaseModel):
 class UserRequest:
     def __init__(self, types: RequestType, is_random: bool = True):
         if types == RequestType.update:
-            self.body = RequestModel(user=UserRequestModel.get_new_email()).create_body()
+            self.body = RequestModel(user=UpdateUserRequestModel.get_new_email()).create_body()
         if types == RequestType.register or types == RequestType.login:
             if is_random:
                 self.body = RequestModel(user=UserRequestModel.create_random_user()).create_body()
