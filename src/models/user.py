@@ -1,4 +1,4 @@
-from typing import Any, Optional, Union
+from typing import Any, Optional
 from dataclasses import dataclass
 from pydantic import BaseModel
 from src.API.authorization_api.request_type import RequestType
@@ -24,32 +24,32 @@ class UserBody:
         return UserBody(_email, _username, _bio, _image, _token)
 
 
-class RegisterRandomUser(BaseModel):
+class UserRequestModel(BaseModel):
     email: Optional[str] = None
     password: Optional[str] = None
     username: Optional[str] = None
 
     @staticmethod
     def create_random_user():
-        return RegisterRandomUser(
+        return UserRequestModel(
             email=TestDataGenerator.generate_email(),
             password=TestDataGenerator.generate_password(),
             username=TestDataGenerator.generate_username()
         )
 
-
-class RegisterRegedUser(BaseModel):
-    email: Optional[str]
-    password: Optional[str]
-    username: Optional[str]
-
     @staticmethod
     def get_user_from_file():
         user_info = FileWorker.get_user_from_file()
-        return RegisterRegedUser(
+        return UserRequestModel(
             email=user_info[0],
             password=user_info[1],
             username=user_info[2]
+        )
+
+    @staticmethod
+    def get_new_email():
+        return UserRequestModel(
+            email=TestDataGenerator.generate_email()
         )
 
 
@@ -63,8 +63,8 @@ class UpdateUser(BaseModel):
         )
 
 
-class Request(BaseModel):
-    user: Union[RegisterRandomUser, RegisterRegedUser, UpdateUser]
+class RequestModel(BaseModel):
+    user: UserRequestModel
 
     def create_body(self) -> str:
         return self.model_dump_json()
@@ -73,9 +73,9 @@ class Request(BaseModel):
 class UserRequest:
     def __init__(self, types: RequestType, is_random: bool = True):
         if types == RequestType.update:
-            self.body = Request(user=UpdateUser.get_new_email()).create_body()
+            self.body = RequestModel(user=UserRequestModel.get_new_email()).create_body()
         if types == RequestType.register or types == RequestType.login:
             if is_random:
-                self.body = Request(user=RegisterRandomUser.create_random_user()).create_body()
+                self.body = RequestModel(user=UserRequestModel.create_random_user()).create_body()
             else:
-                self.body = Request(user=RegisterRegedUser.get_user_from_file()).create_body()
+                self.body = RequestModel(user=UserRequestModel.get_user_from_file()).create_body()
