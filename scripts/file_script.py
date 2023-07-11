@@ -20,16 +20,15 @@ def insert_new_user_to_file(users_count: int):
 
     filled_rows = sheet.max_row
 
-    if filled_rows == 0:
+    if filled_rows == 1:
         i = 1
-        while i < users_count + 1:
+        while i <= users_count:
             random_length = random.randint(6, 11)
             add_user_to_sheet(sheet, i, random_length)
             i += 1
     else:
-        users_count += filled_rows
         i = filled_rows + 1
-        while i <= users_count:
+        while i <= filled_rows + users_count:
             random_length = random.randint(6, 11)
             add_user_to_sheet(sheet, i, random_length)
             i += 1

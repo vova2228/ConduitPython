@@ -19,6 +19,11 @@ class ArticlesClient(BaseClient):
         response = self.__client.custom_request("GET", self.__get_articles_endpoint, params=query_params)
         return response
 
+    def get_article_by_author(self, author) -> Response:
+        query_params = {"author": author}
+        response = self.__client.custom_request("GET", self.__get_articles_endpoint, params=query_params)
+        return response
+
     def post_article(self, request_body=None, request_headers=None):
         response = self.__client.custom_request(
             "POST", self.__get_articles_endpoint, headers=request_headers, json=request_body)

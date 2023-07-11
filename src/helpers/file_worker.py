@@ -22,7 +22,7 @@ class FileWorker:
 
         filled_rows = sheet.max_row
 
-        if filled_rows == 0:
+        if filled_rows == 1:
             i = 1
             while i < users_count + 1:
                 random_length = random.randint(6, 11)

@@ -16,7 +16,7 @@ auth_api = AuthAPI()
 tests = ArticlesTests()
 
 
-@allure.suite("Тесты статей")
+@allure.suite("Articles tests")
 class TestArticles:
 
     @allure.title("Getting articles by token")
@@ -86,6 +86,35 @@ class TestArticles:
         with step("Create an article by token"):
             articles, response = articles_api.post_articles(token)
             slug = articles.articles.slug
+
+        with step("Check that the response body has valid data"):
+            tests.check_articles_response(
+                response, SuccessfullPostArticle.expected_keys, SuccessfullPostArticle.status_code)
+
+        with step("Delete the article"):
+            response = articles_api.delete_article(token=token, slug=slug)
+            tests.check_articles_response(
+                response, SuccessfullDeleteArticle.expected_text, SuccessfullDeleteArticle.status_code)
+
+    @allure.title("Получение статьи по имени автора")
+    @pytest.mark.order(5)
+    def test_get_articles_by_author(self):
+
+        with step("Get the user from the file"):
+            user = utils.get_user(RequestType.login, is_random=False)
+
+        with step("Log in and get the token"):
+            login_user, response = auth_api.login_user(user)
+            token = login_user.token
+            author = login_user.username
+
+        with step("Create an article by token"):
+            articles, response = articles_api.post_articles(token)
+            slug = articles.articles.slug
+
+        with step('Get articles by author name'):
+            articles_by_author, response = articles_api.get_articles_by_author(author)
+            print(response)
 
         with step("Check that the response body has valid data"):
             tests.check_articles_response(
