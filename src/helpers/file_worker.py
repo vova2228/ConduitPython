@@ -4,14 +4,23 @@ from src.generators.generator import TestDataGenerator
 
 
 class FileWorker:
-    __users_file_path = '../../ConduitPython/tests/data/registered_users.xlsx'
-    __articles_file_path = '../../ConduitPython/tests/data/articles.xlsx'
+
+    """
+    Handles reading and writing data to Excel files.
+
+    Attributes:
+        __users_file_path (str): Path to registered users Excel file.
+        __articles_file_path (str): Path to articles Excel file.
+    """
+
+    __users_file_path = 'tests/data/registered_users.xlsx'
+    __articles_file_path = 'tests/data/articles.xlsx'
 
     @classmethod
     def insert_new_user_to_file(cls, users_count: int):
         sheet = cls.initialize_users_sheet()
 
-        filled_rows = cls.count_filled_rows(sheet)
+        filled_rows = sheet.max_row
 
         if filled_rows == 0:
             i = 1
@@ -28,14 +37,6 @@ class FileWorker:
                 i += 1
 
         sheet.parent.save(cls.__users_file_path)
-
-    @classmethod
-    def count_filled_rows(cls, sheet):
-        filled_rows = 0
-        for row in sheet.iter_rows():
-            if any(cell.value for cell in row):
-                filled_rows += 1
-        return filled_rows
 
     @classmethod
     def __add_user_to_sheet(cls, sheet, index, random_length):
@@ -58,7 +59,7 @@ class FileWorker:
     @classmethod
     def get_user_from_file(cls):
         sheet = cls.initialize_users_sheet()
-        filled_rows = cls.count_filled_rows(sheet)
+        filled_rows = sheet.max_row
 
         if filled_rows > 1:
             index = random.randint(1, filled_rows)
@@ -74,7 +75,7 @@ class FileWorker:
     @classmethod
     def insert_new_email_for_user(cls, old_email, new_email):
         sheet = cls.initialize_users_sheet()
-        filled_rows = cls.count_filled_rows(sheet)
+        filled_rows = sheet.max_row
 
         for i in range(1, filled_rows + 1):
             current_email = sheet[f'A{i}'].value
@@ -84,11 +85,10 @@ class FileWorker:
                 return True
         return False
 
-
     @classmethod
     def get_article_from_file(cls):
         sheet = cls.initialize_articles_sheet()
-        filled_rows = cls.count_filled_rows(sheet)
+        filled_rows = sheet.max_row
 
         index = random.randint(1, filled_rows)
 
@@ -96,7 +96,7 @@ class FileWorker:
         description = sheet.cell(row=index, column=2).value
         body = sheet.cell(row=index, column=3).value
 
-        tags = [sheet.cell(row=i, column=4).value for i in range(index, filled_rows + 1) if sheet.cell(row=i, column=4).value]
+        tags = [sheet.cell(row=i, column=4).value for i in range(index, filled_rows + 1) if
+                sheet.cell(row=i, column=4).value]
 
         return title, description, body, tags
-

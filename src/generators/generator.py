@@ -1,9 +1,21 @@
 import random
 import string
 
+letters = string.ascii_lowercase
+digits = string.digits
+
 
 class TestDataGenerator:
-    letters = string.ascii_lowercase
+
+    """
+    Generates random test data.
+
+    Methods:
+        generate_user_data(length): Generates email, password and username.
+        generate_email(length): Generates random email.
+        generate_password(length): Generates random password.
+        generate_username(length): Generates random username.
+    """
 
     def generate_user_data(self, length=8):
         email = self.generate_email(length)
@@ -13,20 +25,17 @@ class TestDataGenerator:
 
     @classmethod
     def generate_email(cls, length=8):
-        username = ''.join(random.choice(cls.letters) for i in range(length))
-        domain = ''.join(random.choice(cls.letters) for i in range(length))
+        username = ''.join(random.choices(letters, k=length))
+        domain = ''.join(random.choices(letters, k=length))
         email = f"{username}@{domain}.com"
         return email
 
     @classmethod
     def generate_password(cls, length=8):
-        characters = string.ascii_letters + string.digits
-        password = ''.join(random.choice(characters) for i in range(length))
+        password = ''.join(random.choices(digits + letters, k=length))
         return password
 
     @classmethod
     def generate_username(cls, length=8):
-        username = ''.join(random.choice(TestDataGenerator.letters) for i in range(length))
+        username = ''.join(random.choices(letters, k=length))
         return username
-
-

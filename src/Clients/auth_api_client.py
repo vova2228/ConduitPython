@@ -10,9 +10,9 @@ class AuthApiClient(BaseClient):
     __auth_login_path = os.environ.get("auth_login_path")
     __auth_current_user_path = os.environ.get("auth_current_user_path")
 
-    __register_endpoint = __base_url + __auth_register_path
-    __login_endpoint = __base_url + __auth_login_path
-    __current_user_endpont = __base_url + __auth_current_user_path
+    __register_endpoint = f'{__base_url}{__auth_register_path}'
+    __login_endpoint = f'{__base_url}{__auth_login_path}'
+    __current_user_endpont = f'{__base_url}{__auth_current_user_path}'
 
     __client = BaseClient()
 

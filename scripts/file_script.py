@@ -18,7 +18,7 @@ def initialize_sheet():
 def insert_new_user_to_file(users_count: int):
     sheet = initialize_sheet()
 
-    filled_rows = count_filled_rows(sheet)
+    filled_rows = sheet.max_row
 
     if filled_rows == 0:
         i = 1
@@ -74,7 +74,7 @@ def add_user_to_sheet(sheet, index, length):
 
 def register_users_from_file():
     sheet = initialize_sheet()
-    filled_rows = count_filled_rows(sheet)
+    filled_rows = sheet.max_row
 
     registered_users = 0
     index = 1
@@ -104,7 +104,7 @@ def clear_file():
 
 def check_users_in_file_are_registered():
     sheet = initialize_sheet()
-    filled_rows = count_filled_rows(sheet)
+    filled_rows = sheet.max_row
 
     index = 1
     unregistered_users = 0
@@ -128,36 +128,36 @@ def check_users_in_file_are_registered():
 
 def main():
     user_input = input(
-        "1 - Создать в файле новых пользователей.\n"
-        "2 - Очистить файл \n"
-        "3 - Проверить зарегистрированы ли пользователи в файле\n"
-        "4 - Зарегистрировать пользователей из файла\n"
-        "5 - Узнать количество пользователей в файле\n")
+        "1 - Create new users in the file.\n"
+        "2 - Clear the file \n"
+        "3 - Check if users in the file are registered\n"
+        "4 - Register users from the file\n"
+        "5 - Find out the number of users in the file\n")
 
     if user_input == "1":
-        user_input = input("Введите количество пользователей: ")
+        user_input = input("Enter the number of users: ")
         insert_new_user_to_file(int(user_input))
-        print("Пользователи добавлены\n")
-        user_input = input("Желаете их зарегистрировать? 1 - Да, 2 - Нет\n")
+        print("Users added\n")
+        user_input = input("Do you want to register them? 1 - Yes, 2 - No\n")
         if user_input == "1":
-            print("Регистрируем пользователей...\n")
+            print("Registering users...\n")
             registered_users = register_users_from_file()
-            print("Пользователи зарегистрированы. Кол-во зарегистрированных пользователей = ", registered_users)
+            print("Users registered. Number of registered users = ", registered_users)
         else:
             pass
     elif user_input == "2":
         clear_file()
-        print("Файл очищен")
+        print("File cleared")
     elif user_input == "3":
-        print("Проверяем зарегистрированы ли пользователи...")
+        print("Checking if users are registered...")
         unregistered_users = check_users_in_file_are_registered()
-        print("Число незарегистрированных пользователей = ", unregistered_users)
+        print("The number of unregistered users = ", unregistered_users)
     elif user_input == "4":
-        print("Регистрируем пользователей...\n")
+        print("Registering users...\n")
         registered_users = register_users_from_file()
-        print("Пользователи зарегистрированы. Кол-во зарегистрированных пользователей = ", registered_users)
+        print("Users registered. Number of registered users = ", registered_users)
     elif user_input == "5":
-        print("Количество пользоватлей в файле: ", count_filled_rows())
+        print("The number of users in the file: ", count_filled_rows())
 
 
 if __name__ == "__main__":

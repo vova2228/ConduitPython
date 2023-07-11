@@ -85,6 +85,14 @@ class ArticleText(BaseModel):
 
 
 class ArticleRequestBody(BaseModel):
+
+    """
+    Represents an article request body.
+
+    Attributes:
+        article (Optional[ArticleText]): The article text. Defaults to reading from a file.
+    """
+
     article: Optional[ArticleText] = ArticleText.get_article_from_file()
 
     def create_body(self) -> str:

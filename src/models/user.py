@@ -65,6 +65,13 @@ class RequestModel(BaseModel):
 
 
 class UserRequest:
+    """
+    Generates a user request.
+    Args:
+        types (RequestType): Type of request (register, login, update)
+        is_random (bool): Whether to generate random or read from file
+    """
+
     def __init__(self, types: RequestType, is_random: bool = True):
         if types == RequestType.update:
             self.body = RequestModel(user=UpdateUserRequestModel.get_new_email()).create_body()

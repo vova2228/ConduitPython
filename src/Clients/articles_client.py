@@ -9,8 +9,8 @@ class ArticlesClient(BaseClient):
     __get_articles_path = os.environ.get("get_articles_path")
     __post_articles_path = os.environ.get("post_articles_path")
 
-    __get_articles_endpoint = __base_url + __get_articles_path
-    __post_articles_endpoint = __base_url + __post_articles_path
+    __get_articles_endpoint = f'{__base_url}{__get_articles_path}'
+    __post_articles_endpoint = f'{__base_url}{__post_articles_path}'
 
     __client = BaseClient()
 
@@ -21,8 +21,7 @@ class ArticlesClient(BaseClient):
 
     def post_article(self, request_body=None, request_headers=None):
         response = self.__client.custom_request(
-            "POST", self.__get_articles_endpoint, headers=request_headers,
-            json=request_body)
+            "POST", self.__get_articles_endpoint, headers=request_headers, json=request_body)
         return response
 
     def delete_article(self, slug, request_body=None, request_headers=None):
