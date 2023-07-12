@@ -1,10 +1,10 @@
 from requests import Response
 
-from tests.baseTest import BaseTest
+from tests.basic_check import BaseCheck
 from src.models.user import UserBody
 
 
-class AuthTest(BaseTest):
+class AuthCheck(BaseCheck):
 
     """
     Contains authentication test methods.

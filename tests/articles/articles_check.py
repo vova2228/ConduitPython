@@ -1,11 +1,11 @@
 from requests import Response
 from src.API.articles_api.articles_api import ArticlesApi
-from tests.baseTest import BaseTest
+from tests.basic_check import BaseCheck
 
 articles_api = ArticlesApi()
 
 
-class ArticlesTests(BaseTest):
+class ArticlesTests(BaseCheck):
 
     @classmethod
     def check_articles_response(cls, response: Response, expected_text: list | str, expected_status_code):

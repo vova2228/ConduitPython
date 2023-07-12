@@ -1,7 +1,7 @@
 from requests import JSONDecodeError
 
 
-class BaseTest:
+class BaseCheck:
 
     @classmethod
     def check_status_code(cls, response, expected_status_code):
