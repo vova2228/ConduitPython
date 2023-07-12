@@ -141,17 +141,18 @@ class TestArticles:
             tests.check_article_was_deleted(author, token)
 
     @allure.title("Get article by tag")
-    @pytest.mark.order(6)
+    @pytest.mark.order(7)
     def test_get_articles_by_tag(self):
         with step("Get all articles"):
-            articles, response = articles_api.get_articles(limit=200)
+            limit = 200
+            articles, response = articles_api.get_articles(limit=limit)
             random_article = (random.choice(articles.articles))
             tag_list = utils.get_tag_list_from_article(random_article)
             tag = random.choice(tag_list)
             expected_articles = [a for a in articles.articles if tag in a.tagList]
 
-        with step("Get articles by tag"):
-            articles_by_tag, response = articles_api.get_articles_by_tag(tag)
+        with step(f"Get articles by tag with limit = {limit}"):
+            articles_by_tag, response = articles_api.get_articles_by_tag(tag, limit=limit)
 
         with step("Compare articles with articles received by tag"):
             tests.check_articles_are_equal(expected_articles, articles_by_tag.articles)

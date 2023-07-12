@@ -27,8 +27,8 @@ class ArticlesApi:
             print(f"Something went wrong. Could not get the article. Response status code = {response.status_code}")
             return None, response
 
-    def get_articles_by_tag(self, tag) -> tuple[Optional[Optional[ArticleBody]], Response]:
-        response = self.__client.get_articles_by_tag(tag)
+    def get_articles_by_tag(self, tag, limit) -> tuple[Optional[Optional[ArticleBody]], Response]:
+        response = self.__client.get_articles_by_tag(tag, limit)
         allure.attach(str(response.text), 'response', allure.attachment_type.TEXT)
         try:
             articles = self.__deserializer.deserialize(response.json(), ArticleBody)
