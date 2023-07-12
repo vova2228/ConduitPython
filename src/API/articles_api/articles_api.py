@@ -11,13 +11,14 @@ class ArticlesApi:
     __client = ArticlesClient()
     __deserializer = Deserializer()
 
-    def get_articles(self, auth_token=None, limit=10, offset=0) -> tuple[Optional[ArticleBody], Response]:
-        if auth_token is not None:
+    def get_articles(self, token=None, limit=10, offset=0) -> tuple[Optional[ArticleBody], Response]:
+        if token is not None:
             print(f"\nGetting articles by token with limit = {limit} and offset = {offset}...")
+            headers = {"Authorization": f'Token {token}'}
         else:
             print(f"\nGetting articles with limit = {limit} and offset = {offset}...")
-        headers = {"Authorization": f'Token {auth_token}'}
-        response = self.__client.get_article(request_headers=headers, limit=limit, offset=offset)
+            headers = {}
+        response = self.__client.get_articles(request_headers=headers, limit=limit, offset=offset)
         allure.attach(str(response.text), 'response', allure.attachment_type.TEXT)
         try:
             articles = self.__deserializer.deserialize(response.json(), ArticleBody)
@@ -28,7 +29,7 @@ class ArticlesApi:
             return None, response
 
     def get_articles_by_tag(self, tag, limit) -> tuple[Optional[Optional[ArticleBody]], Response]:
-        response = self.__client.get_articles_by_tag(tag, limit)
+        response = self.__client.get_articles(tag=tag, limit=limit)
         allure.attach(str(response.text), 'response', allure.attachment_type.TEXT)
         try:
             articles = self.__deserializer.deserialize(response.json(), ArticleBody)
@@ -40,7 +41,7 @@ class ArticlesApi:
 
     def get_articles_by_author(self, author, token) -> tuple[Optional[ArticleBody], Response]:
         headers = {"Authorization": f'Token {token}'}
-        response = self.__client.get_article_by_author(author, headers)
+        response = self.__client.get_articles(request_headers=headers, author=author)
         allure.attach(str(response.text), 'response', allure.attachment_type.TEXT)
         try:
             articles = self.__deserializer.deserialize(response.json(), ArticleBody)

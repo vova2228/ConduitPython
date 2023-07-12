@@ -14,19 +14,17 @@ class ArticlesClient(BaseClient):
 
     __client = BaseClient()
 
-    def get_article(self, limit, offset, request_body=None, request_headers=None) -> Response:
-        query_params = {"limit": limit, "offset": offset}
-        response = self.__client.custom_request("GET", self.__get_articles_endpoint, params=query_params)
-        return response
+    def get_articles(self, request_headers=None, **kwargs) -> Response:
+        query_params = None
+        if "limit" in kwargs and "offset" in kwargs:
+            query_params = {"limit": kwargs.get("limit"), "offset": kwargs.get("offset")}
+        elif "tag" in kwargs:
+            query_params = {"tag": kwargs.get("tag"), "limit": kwargs.get("limit")}
+        elif "author" in kwargs:
+            query_params = {"author": kwargs.get("author")}
 
-    def get_articles_by_tag(self, tag, limit):
-        query_params = {"tag": tag, "limit": limit}
-        response = self.__client.custom_request("GET", self.__get_articles_endpoint, params=query_params)
-        return response
-
-    def get_article_by_author(self, author, request_headers) -> Response:
-        query_params = {"author": author}
-        response = self.__client.custom_request("GET", self.__get_articles_endpoint, params=query_params, headers=request_headers)
+        headers = request_headers
+        response = self.__client.custom_request("GET", self.__get_articles_endpoint, headers=headers, params=query_params)
         return response
 
     def post_article(self, request_body=None, request_headers=None):
