@@ -15,3 +15,8 @@ class Utils:
     @staticmethod
     def get_user(request_type: RequestType, is_random: bool = None):
         return UserRequest(request_type, is_random)
+
+    @staticmethod
+    def get_tag_list_from_article(article) -> list:
+        tag_list = article.tagList
+        return tag_list

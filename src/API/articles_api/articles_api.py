@@ -27,6 +27,17 @@ class ArticlesApi:
             print(f"Something went wrong. Could not get the article. Response status code = {response.status_code}")
             return None, response
 
+    def get_articles_by_tag(self, tag) -> tuple[Optional[Optional[ArticleBody]], Response]:
+        response = self.__client.get_articles_by_tag(tag)
+        allure.attach(str(response.text), 'response', allure.attachment_type.TEXT)
+        try:
+            articles = self.__deserializer.deserialize(response.json(), ArticleBody)
+            print(f"Articles by tag '{tag}' received")
+            return articles, response
+        except KeyError:
+            print(f"Could not get articles by tag '{tag}', status {response.status_code}")
+            return None, response
+
     def get_articles_by_author(self, author, token) -> tuple[Optional[ArticleBody], Response]:
         headers = {"Authorization": f'Token {token}'}
         response = self.__client.get_article_by_author(author, headers)

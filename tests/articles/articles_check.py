@@ -64,3 +64,8 @@ class ArticlesTests(BaseCheck):
     @staticmethod
     def check_articles_are_not_equal(first_articles, sec_articles):
         assert first_articles != sec_articles, "First articles response is equal sec article response!!"
+
+    @staticmethod
+    def check_articles_are_equal(first_articles: list, sec_articles: list):
+        for article in first_articles:
+            assert article in sec_articles, f"Article with slug ''{article.slug}'' is not in second response!!"

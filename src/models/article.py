@@ -26,7 +26,7 @@ class Article:
     title: str
     description: str
     body: str
-    tagList: str
+    tagList: list
     createdAt: str
     updatedAt: str
     favorited: bool
@@ -39,7 +39,7 @@ class Article:
         _title = str(obj.get("title"))
         _description = str(obj.get("description"))
         _body = str(obj.get("body"))
-        _tagList = str(obj.get("tagList"))
+        _tagList = list(obj.get("tagList"))
         _createdAt = str(obj.get("createdAt"))
         _updatedAt = str(obj.get("updatedAt"))
         _favorited = bool(obj.get("favorited"))
