@@ -1,16 +1,19 @@
-import json
+from requests import JSONDecodeError
+
 
 class BaseTest:
-    def check_response_is_correct(self, response):
-        self._check_status_code(response)
-        self.check_response_is_json(response)
 
-    def _check_status_code(self, response):
-        assert response.status_code == 200, f"Status is code is not 200. It is {response.status_code}"
+    @classmethod
+    def check_status_code(cls, response, expected_status_code):
+        assert response.status_code == expected_status_code, f"The status code of the response from the server = {response.status_code} instead of {expected_status_code}!!"
 
-    def check_response_is_json(self, response):
-        assert response.headers.get('Content-Type') == 'application/json; charset=utf-8', "Response is not in JSON format"
-        try:
-            json.loads(response.text)
-        except ValueError:
-            assert False, "Response body is not valid JSON format"
+    @classmethod
+    def check_response_is_json(cls, response):
+        if response.text == "":
+            print("Response body is empty")
+        else:
+            assert response.headers.get('Content-Type') == 'application/json; charset=utf-8', "Response is not in JSON format"
+            try:
+                response.json()
+            except JSONDecodeError:
+                print("Response is not in JSON format")

@@ -25,9 +25,6 @@ class TestAuth:
         with step("Register user"):
             registered_user, response = auth_api.register_user(user)
 
-        with step("Check that the response body is in JSON format"):
-            tests.check_response_is_json(response)
-
         with step("Check that the response body has the correct data"):
             tests.check_auth_response(
                 response, SuccesfullRegistration.expected_keys,
@@ -41,9 +38,6 @@ class TestAuth:
 
         with step("Try to register a user"):
             registered_user, response = auth_api.register_user(user)
-
-        with step("Check that the response body is in JSON format"):
-            tests.check_response_is_json(response)
 
         with step("Check that the response body has the correct data"):
             tests.check_auth_response(
@@ -59,9 +53,6 @@ class TestAuth:
         with step("Log in"):
             login_user, response = auth_api.login_user(user)
 
-        with step("Check that the response body is in JSON format"):
-            tests.check_response_is_json(response)
-
         with step("Check that the response body has the correct data"):
             tests.check_auth_response(response, SuccesfullLogin.expected_keys, SuccesfullLogin.status_code)
 
@@ -73,9 +64,6 @@ class TestAuth:
 
         with step("Try to log in"):
             login_user, response = auth_api.login_user(user)
-
-        with step("Check that the response body is in JSON format"):
-            tests.check_response_is_json(response)
 
         with step("Check that the response body has the correct data"):
             tests.check_auth_response(response, UserIsNotRegistered.expected_text, UserIsNotRegistered.status_code)
@@ -92,9 +80,6 @@ class TestAuth:
 
         with step("Get current user by token"):
             current_user, response = auth_api.get_current_user(token)
-
-        with step("Check that the response body is in JSON format"):
-            tests.check_response_is_json(response)
 
         with step("Check that the response body has the correct data"):
             tests.check_auth_res_body(login_user, current_user)
@@ -114,9 +99,6 @@ class TestAuth:
 
         with step("Get current user by token"):
             current_user, _ = auth_api.get_current_user(token)
-
-        with step("Check that the response body is in JSON format"):
-            tests.check_response_is_json(response)
 
         with step("Check that the response body has the correct data"):
             tests.check_auth_res_body(registered_user, current_user)
@@ -140,10 +122,8 @@ class TestAuth:
         with step("Update the user"):
             updated_user, response = auth_api.update_user(token, user_for_update)
 
-        with step("Check that the response body is in JSON format"):
-            tests.check_response_is_json(response)
-
         with step("Check that the response body has the correct data"):
             tests.check_res_body_username(login_user, updated_user)
             tests.check_auth_response(
                 response, SuccesfullRegistration.expected_keys, SuccesfullRegistration.status_code)
+

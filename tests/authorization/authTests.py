@@ -30,8 +30,8 @@ class AuthTest(BaseTest):
         else:
             assert expected_text in response.text, f"The server response does not contain the text {expected_text}!!"
 
-        assert response.status_code == expected_status_code, f"The status code of the response from the server = {response.status_code} instead of {expected_status_code}!!"
-
+        cls.check_status_code(response, expected_status_code)
+        cls.check_response_is_json(response)
 
     @classmethod
     def check_auth_res_body(cls, first_user: UserBody, sec_user: UserBody):
@@ -47,6 +47,7 @@ class AuthTest(BaseTest):
         print("Checking the response body...")
         cls.check_res_body_email(first_user, sec_user)
         cls.check_res_body_username(first_user, sec_user)
+
 
 
     @classmethod

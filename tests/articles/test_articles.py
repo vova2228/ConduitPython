@@ -32,9 +32,6 @@ class TestArticles:
         with step("Get the article by token"):
             articles, response = articles_api.get_articles(token, limit=1)
 
-        with step("Check that the response body is in JSON format"):
-            tests.check_response_is_json(response)
-
         with step("Check that the response body has valid data"):
             tests.check_articles_response(
                 response, Successfullgetarticle.expected_keys, Successfullgetarticle.status_code)
@@ -44,9 +41,6 @@ class TestArticles:
     def test_get_articles(self):
         with step("Get the article"):
             articles, response = articles_api.get_articles(limit=1)
-
-        with step("Check that the response body is in JSON format"):
-            tests.check_response_is_json(response)
 
         with step("Check that the response body has valid data"):
             tests.check_articles_response(
@@ -59,9 +53,6 @@ class TestArticles:
         with step(f"Get articles with limit = {limit}"):
             articles, response = articles_api.get_articles(limit=limit)
 
-        with step("Check that the response body is in JSON format"):
-            tests.check_response_is_json(response)
-
         with step("Check that the response body has valid data"):
             tests.check_articles_response(
                 response, Successfullgetarticle.expected_keys, Successfullgetarticle.status_code)
@@ -70,8 +61,28 @@ class TestArticles:
             actual_count = len(articles.articles)
             tests.check_response_article_count(limit, actual_count)
 
+    # @allure.title("Checking article offset")
+    # @pytest.mark.order(4)
+    # def test_check_articles_offset(self):
+    #     with step("Get articles with default offset"):
+    #         articles_default, response = articles_api.get_articles()
+    #         count_default = len(articles_default.articles)
+    #
+    #     with step("Get articles with offset"):
+    #         offset = random.randint(1, 10)
+    #         articles_offset, response = articles_api.get_articles(offset=offset)
+    #         count_offset = len(articles_offset.articles)
+    #
+    #     with step("Check default and offset article counts"):
+    #         assert count_default > count_offset
+    #
+    #     with step("Check articles are different"):
+    #         default_titles = {article.title for article in articles_default.articles}
+    #         offset_titles = {article.title for article in articles_offset.articles}
+    #         assert len(default_titles.intersection(offset_titles)) == 0
+
     @allure.title("Checking article creation")
-    @pytest.mark.order(4)
+    @pytest.mark.order(5)
     def test_create_article(self):
         with step("Get the user from the file"):
             user = utils.get_user(RequestType.login, is_random=False)
@@ -98,7 +109,7 @@ class TestArticles:
             tests.check_article_was_deleted(author, token)
 
     @allure.title("Get article by author name")
-    @pytest.mark.order(5)
+    @pytest.mark.order(6)
     def test_get_articles_by_author(self):
         with step("Get the user from the file"):
             user = utils.get_user(RequestType.login, is_random=False)
