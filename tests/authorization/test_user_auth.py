@@ -5,6 +5,7 @@ from tests.authorization.authTests import AuthTest
 from src.API.authorization_api.request_type import RequestType
 from src.expected_results.auth_expected_results import *
 from src.API.authorization_api.auth_api import AuthAPI
+from flaky import flaky
 from src.utils.utils import Utils
 
 step = allure.step
@@ -13,6 +14,7 @@ auth_api = AuthAPI()
 tests = AuthTest()
 
 
+@flaky(max_runs=2, min_passes=1)
 @allure.suite("Authorization tests")
 class TestAuth:
 

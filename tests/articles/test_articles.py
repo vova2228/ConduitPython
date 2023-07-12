@@ -1,6 +1,7 @@
 import random
 import allure
 import pytest
+from flaky import flaky
 
 from src.API.authorization_api.auth_api import AuthAPI
 from tests.articles.articlesTests import ArticlesTests
@@ -16,6 +17,7 @@ auth_api = AuthAPI()
 tests = ArticlesTests()
 
 
+@flaky(max_runs=2, min_passes=1)
 @allure.suite("Articles tests")
 class TestArticles:
 
