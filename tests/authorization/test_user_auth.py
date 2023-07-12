@@ -1,7 +1,7 @@
 import allure
 import pytest
 
-from tests.authorization.authTests import AuthTest
+from tests.authorization.auth_check import AuthTest
 from src.API.authorization_api.request_type import RequestType
 from src.expected_results.auth_expected_results import *
 from src.API.authorization_api.auth_api import AuthAPI
@@ -128,4 +128,3 @@ class TestAuth:
             tests.check_res_body_username(login_user, updated_user)
             tests.check_auth_response(
                 response, SuccesfullRegistration.expected_keys, SuccesfullRegistration.status_code)
-

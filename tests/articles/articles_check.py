@@ -60,3 +60,7 @@ class ArticlesTests(BaseTest):
         print(f"Article for ''{author}'' was deleted")
         cls.check_status_code(response, 200)
         cls.check_response_is_json(response)
+
+    @staticmethod
+    def check_articles_are_not_equal(first_articles, sec_articles):
+        assert first_articles != sec_articles, "First articles response is equal sec article response!!"

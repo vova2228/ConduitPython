@@ -2,9 +2,8 @@ import random
 import allure
 import pytest
 from flaky import flaky
-
 from src.API.authorization_api.auth_api import AuthAPI
-from tests.articles.articlesTests import ArticlesTests
+from tests.articles.articles_check import ArticlesTests
 from src.expected_results.articles_expected_results import *
 from src.API.authorization_api.request_type import RequestType
 from src.API.articles_api.articles_api import ArticlesApi
@@ -36,7 +35,7 @@ class TestArticles:
 
         with step("Check that the response body has valid data"):
             tests.check_articles_response(
-                response, Successfullgetarticle.expected_keys, Successfullgetarticle.status_code)
+                response, SuccessfullGetArticle.expected_keys, SuccessfullGetArticle.status_code)
 
     @allure.title("Getting articles without a token")
     @pytest.mark.order(2)
@@ -46,7 +45,7 @@ class TestArticles:
 
         with step("Check that the response body has valid data"):
             tests.check_articles_response(
-                response, Successfullgetarticle.expected_keys, Successfullgetarticle.status_code)
+                response, SuccessfullGetArticle.expected_keys, SuccessfullGetArticle.status_code)
 
     @allure.title("Checking the number of articles in the response")
     @pytest.mark.order(3)
@@ -57,31 +56,31 @@ class TestArticles:
 
         with step("Check that the response body has valid data"):
             tests.check_articles_response(
-                response, Successfullgetarticle.expected_keys, Successfullgetarticle.status_code)
+                response, SuccessfullGetArticle.expected_keys, SuccessfullGetArticle.status_code)
 
         with step(f"Check that the number of articles in the response corresponds to limit = {limit}"):
             actual_count = len(articles.articles)
             tests.check_response_article_count(limit, actual_count)
 
-    # @allure.title("Checking article offset")
-    # @pytest.mark.order(4)
-    # def test_check_articles_offset(self):
-    #     with step("Get articles with default offset"):
-    #         articles_default, response = articles_api.get_articles()
-    #         count_default = len(articles_default.articles)
-    #
-    #     with step("Get articles with offset"):
-    #         offset = random.randint(1, 10)
-    #         articles_offset, response = articles_api.get_articles(offset=offset)
-    #         count_offset = len(articles_offset.articles)
-    #
-    #     with step("Check default and offset article counts"):
-    #         assert count_default > count_offset
-    #
-    #     with step("Check articles are different"):
-    #         default_titles = {article.title for article in articles_default.articles}
-    #         offset_titles = {article.title for article in articles_offset.articles}
-    #         assert len(default_titles.intersection(offset_titles)) == 0
+    @allure.title("Checking article offset")
+    @pytest.mark.order(4)
+    def test_check_articles_offset(self):
+        with step("Get articles with default offset"):
+            articles_first_page, response = articles_api.get_articles()
+            offset = random.randint(1, 10)
+
+        with step(f"Get articles with offset = {offset}"):
+            articles_with_offset, response = articles_api.get_articles(offset=offset)
+
+        with step("Check that the response body has valid data"):
+            tests.check_articles_response(response, SuccessfullGetArticle.expected_keys, SuccessfullGetArticle.status_code)
+
+        with step("Check default and offset article counts"):
+            tests.check_response_article_count(10, len(articles_first_page.articles))
+            tests.check_response_article_count(10, len(articles_with_offset.articles))
+
+        with step("Check articles are different"):
+            tests.check_articles_are_not_equal(articles_first_page, articles_with_offset)
 
     @allure.title("Checking article creation")
     @pytest.mark.order(5)
