@@ -1,6 +1,7 @@
 import random
 import allure
 import pytest
+
 from flaky import flaky
 from src.API.authorization_api.auth_api import AuthAPI
 from tests.articles.articles_check import ArticlesTests
@@ -95,7 +96,7 @@ class TestArticles:
             author = login_user.username
 
         with step("Create an article by token"):
-            articles, response = articles_api.post_articles(token)
+            articles, response = articles_api.post_articles(token=token)
             slug = articles.articles.slug
 
         with step("Check that the response body has valid data"):
@@ -122,7 +123,7 @@ class TestArticles:
             author = login_user.username
 
         with step("Create an article by token"):
-            articles, response = articles_api.post_articles(token)
+            articles, response = articles_api.post_articles(token=token)
             slug = articles.articles.slug
 
         with step('Get articles by author name'):
@@ -143,8 +144,8 @@ class TestArticles:
     @allure.title("Get article by tag")
     @pytest.mark.order(7)
     def test_get_articles_by_tag(self):
-        with step("Get all articles"):
-            limit = 200
+        with step("Get all articles and filter by random tag"):
+            limit = random.randint(10, 200)
             articles, response = articles_api.get_articles(limit=limit)
             random_article = (random.choice(articles.articles))
             tag_list = utils.get_tag_list_from_article(random_article)
@@ -156,3 +157,42 @@ class TestArticles:
 
         with step("Compare articles with articles received by tag"):
             tests.check_articles_are_equal(expected_articles, articles_by_tag.articles)
+
+    @allure.title("Update article")
+    @pytest.mark.order(8)
+    def test_update_article(self):
+        with step("Get the user from the file"):
+            user = utils.get_user(RequestType.login, is_random=False)
+
+        with step("Log in and get the token"):
+            login_user, _ = auth_api.login_user(user)
+            token = login_user.token
+            author = login_user.username
+
+        with step("Create an article by token"):
+            article_before_update, response = articles_api.post_articles(token=token)
+            slug = article_before_update.articles.slug
+            tests.check_articles_response(response, SuccessfullPostArticle.expected_keys, SuccessfullGetArticle.status_code)
+
+        with step(f"Update article with slug ''{slug}''"):
+            updated_article, response = articles_api.update_articles(slug=slug, token=token)
+            slug = updated_article.articles.slug
+            now_date = utils.get_now_date()
+            tests.check_articles_response(response, SuccessfullPostArticle.expected_keys, SuccessfullPostArticle.status_code)
+
+        with step(f"Get article with slug ''{slug}''"):
+            new_article, response = articles_api.get_articles_by_slug(slug=slug, token=token)
+            date_updated_at = utils.convert_article_date(new_article.articles.updatedAt)
+            tests.check_articles_response(response, SuccessfullPostArticle.expected_keys, SuccessfullPostArticle.status_code)
+
+        with step("Check articles are not equal and dates"):
+            tests.check_articles_are_not_equal(article_before_update, new_article)
+            tests.check_dates_are_equal(now_date, date_updated_at)
+
+        with step("Delete article"):
+            response = articles_api.delete_article(slug=slug, token=token)
+            tests.check_articles_response(response, SuccessfullDeleteArticle.expected_text, SuccessfullDeleteArticle.status_code)
+
+        with step("Check article was deleted"):
+            tests.check_article_was_deleted(author, token)
+

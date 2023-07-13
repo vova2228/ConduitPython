@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import Any, List, Optional, Union
 from pydantic import BaseModel
+from API.articles_api.request_type import RequestType
 from src.helpers.file_worker import FileWorker
 
 
@@ -67,7 +68,7 @@ class ArticleBody:
         return ArticleBody(articles, articlesCount)
 
 
-class ArticleText(BaseModel):
+class ArticleCreate(BaseModel):
     title: Optional[str]
     description: Optional[str]
     body: Optional[str]
@@ -76,7 +77,7 @@ class ArticleText(BaseModel):
     @staticmethod
     def get_article_from_file():
         article_info = FileWorker.get_article_from_file()
-        return ArticleText(
+        return ArticleCreate(
             title=article_info[0],
             description=article_info[1],
             body=article_info[2],
@@ -84,16 +85,17 @@ class ArticleText(BaseModel):
         )
 
 
-class ArticleRequestBody(BaseModel):
-
-    """
-    Represents an article request body.
-
-    Attributes:
-        article (Optional[ArticleText]): The article text. Defaults to reading from a file.
-    """
-
-    article: Optional[ArticleText] = ArticleText.get_article_from_file()
+class RequestModel(BaseModel):
+    article: ArticleCreate
 
     def create_body(self) -> str:
         return self.model_dump_json()
+
+
+class ArticleRequest:
+
+    def __init__(self, types: RequestType):
+        if types == RequestType.create:
+            self.body = RequestModel(article=ArticleCreate.get_article_from_file()).create_body()
+        if types == RequestType.update:
+            self.body = RequestModel(article=ArticleCreate.get_article_from_file()).create_body()

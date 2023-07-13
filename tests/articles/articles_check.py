@@ -71,3 +71,8 @@ class ArticlesTests(BaseCheck):
         print("Checking articles are equal...")
         for article in first_articles:
             assert article in sec_articles, f"Article with slug ''{article.slug}'' is not in second response!!"
+
+    @staticmethod
+    def check_dates_are_equal(first_date, sec_date):
+        print("Checking dates are equal...")
+        assert first_date == sec_date, f"Date {first_date} != {sec_date}!!"

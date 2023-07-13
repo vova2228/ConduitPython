@@ -1,4 +1,7 @@
 import random
+from datetime import datetime
+
+import pytz
 
 from src.API.authorization_api.request_type import RequestType
 from src.models.user import UserRequest
@@ -20,3 +23,14 @@ class Utils:
     def get_tag_list_from_article(article) -> list:
         tag_list = article.tagList
         return tag_list
+
+    @staticmethod
+    def get_now_date():
+        date = datetime.utcnow().replace(tzinfo=pytz.utc)
+        date = date.replace(second=0, microsecond=0).isoformat() + 'Z'
+        return date
+
+    @staticmethod
+    def convert_article_date(date):
+        date = datetime.fromisoformat(date).astimezone(pytz.utc).replace(second=0, microsecond=0).isoformat() + 'Z'
+        return date

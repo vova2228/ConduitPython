@@ -2,7 +2,9 @@ import json
 from typing import Optional
 import allure
 from requests import Response
-from src.models.article import ArticleBody, ArticleRequestBody
+
+from API.articles_api.request_type import RequestType
+from src.models.article import ArticleBody, ArticleRequest
 from src.Clients.articles_client import ArticlesClient
 from src.helpers.deserializer import Deserializer
 
@@ -19,6 +21,23 @@ class ArticlesApi:
             print(f"\nGetting articles with limit = {limit} and offset = {offset}...")
             headers = {}
         response = self.__client.get_articles(request_headers=headers, limit=limit, offset=offset)
+        allure.attach(str(response.text), 'response', allure.attachment_type.TEXT)
+        try:
+            articles = self.__deserializer.deserialize(response.json(), ArticleBody)
+            print("Article received\n")
+            return articles, response
+        except KeyError:
+            print(f"Something went wrong. Could not get the article. Response status code = {response.status_code}")
+            return None, response
+
+    def get_articles_by_slug(self, slug, token=None) -> tuple[Optional[ArticleBody], Response]:
+        if token is not None:
+            print(f"\nGetting articles by token with slug = ''{slug}''...")
+            headers = {"Authorization": f'Token {token}'}
+        else:
+            print(f"\nGetting articles with slug = {slug}...")
+            headers = {}
+        response = self.__client.get_articles(request_headers=headers, slug=slug)
         allure.attach(str(response.text), 'response', allure.attachment_type.TEXT)
         try:
             articles = self.__deserializer.deserialize(response.json(), ArticleBody)
@@ -51,13 +70,13 @@ class ArticlesApi:
             print(f"Something went wrong. Could not get articles by author ''{author}''. Response status code = {response.status_code}")
             return None, response
 
-    def post_articles(self, auth_token=None, article_data: ArticleRequestBody = ArticleRequestBody()) -> tuple[Optional[ArticleBody], Response]:
-        if auth_token is not None:
+    def post_articles(self, article_data: ArticleRequest = ArticleRequest(RequestType.create), token=None) -> tuple[Optional[ArticleBody], Response]:
+        if token is not None:
             print(f"\nPosting an article with a token...")
         else:
             print(f"\nPosting an article without a token...")
-        headers = {"Authorization": f'Token {auth_token}'}
-        request_body = json.loads(article_data.create_body())
+        headers = {"Authorization": f'Token {token}'}
+        request_body = json.loads(article_data.body)
         response = self.__client.post_article(request_headers=headers, request_body=request_body)
         allure.attach(str(response.text), 'response', allure.attachment_type.TEXT)
         try:
@@ -68,7 +87,24 @@ class ArticlesApi:
             print(f"Something went wrong. Could not post the article. Response status code = {response.status_code}")
             return None, response
 
-    def delete_article(self, slug=None, token=None):
+    def update_articles(self, slug, article_data: ArticleRequest = ArticleRequest(RequestType.update), token=None) -> tuple[Optional[ArticleBody], Response]:
+        if token is not None:
+            print(f"\nUpdating an article ''{slug}'' with a token...")
+        else:
+            print(f"\nUpdating an article ''{slug}'' without a token...")
+        headers = {"Authorization": f'Token {token}'}
+        request_body = json.loads(article_data.body)
+        response = self.__client.update_article(slug, request_headers=headers, request_body=request_body)
+        allure.attach(str(response.text), 'response', allure.attachment_type.TEXT)
+        try:
+            articles = self.__deserializer.deserialize(response.json(), ArticleBody)
+            print("Article created\n")
+            return articles, response
+        except KeyError:
+            print(f"Something went wrong. Could not post the article. Response status code = {response.status_code}")
+            return None, response
+
+    def delete_article(self, slug, token=None):
         headers = {"Authorization": f'Token {token}'}
         response = self.__client.delete_article(request_headers=headers, slug=slug)
         if response.status_code in [200, 204]:

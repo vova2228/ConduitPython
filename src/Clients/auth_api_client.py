@@ -12,7 +12,7 @@ class AuthApiClient(BaseClient):
 
     __register_endpoint = f'{__base_url}{__auth_register_path}'
     __login_endpoint = f'{__base_url}{__auth_login_path}'
-    __current_user_endpont = f'{__base_url}{__auth_current_user_path}'
+    __current_user_endpoint = f'{__base_url}{__auth_current_user_path}'
 
     __client = BaseClient()
 
@@ -25,9 +25,9 @@ class AuthApiClient(BaseClient):
         return response
 
     def get_user(self, request_body=None, request_headers=None) -> Response:
-        response = self.__client.custom_request("GET", self.__current_user_endpont, headers=request_headers)
+        response = self.__client.custom_request("GET", self.__current_user_endpoint, headers=request_headers)
         return response
 
     def update_user(self, request_body=None, request_headers=None) -> Response:
-        response = self.__client.custom_request("PUT", self.__current_user_endpont, headers=request_headers, json=request_body)
+        response = self.__client.custom_request("PUT", self.__current_user_endpoint, headers=request_headers, json=request_body)
         return response
