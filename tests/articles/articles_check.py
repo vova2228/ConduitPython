@@ -89,5 +89,11 @@ class ArticlesTests(BaseCheck):
 
     @staticmethod
     def check_article_is_favorited(articles):
-        print("Checking article was favorited...")
+        print("Checking flag favorited in response...")
         assert articles.articles.favorited is True, f"Article with slug ''{articles.articles.slug}'' was not added to Favorites"
+
+    @staticmethod
+    def check_article_is_not_favorite(articles):
+        print("Checking flag favorited in response...")
+        assert articles.articles.favorited is False, f"Article with slug ''{articles.articles.slug}'' was not deleted from Favorites"
+

@@ -86,16 +86,28 @@ class ArticlesApi:
             print(f"Something went wrong. Could not post the article. Response status code = {response.status_code}")
             return None, response
 
-    def add_article_to_favorite(self, slug, token) -> tuple[Optional[ArticleBody], Response]:
+    def add_article_to_favorites(self, slug, token) -> tuple[Optional[ArticleBody], Response]:
         headers = {"Authorization": f'Token {token}'}
         response = self.__client.post_article(request_headers=headers, slug=slug)
         allure.attach(str(response.text), 'response', allure.attachment_type.TEXT)
         try:
             articles = self.__deserializer.deserialize(response.json(), ArticleBody)
-            print("Article added to favorites")
+            print(f"Article with slug ''{slug}'' added to favorites")
             return articles, response
         except KeyError:
-            print(f"Something went wrong. Could not add article to favorites. Response status code = {response.status_code}")
+            print(f"Something went wrong. Could not add article with slug ''{slug}'' to favorites. Response status code = {response.status_code}")
+            return None, response
+
+    def delete_article_from_favorites(self, slug, token) -> tuple[Optional[ArticleBody], Response]:
+        headers = {"Authorization": f'Token {token}'}
+        response = self.__client.delete_article_from_favorites(slug=slug, request_headers=headers)
+        allure.attach(str(response.text), 'response', allure.attachment_type.TEXT)
+        try:
+            articles = self.__deserializer.deserialize(response.json(), ArticleBody)
+            print(f"Article with slug ''{slug}'' deleted from favorites")
+            return articles, response
+        except KeyError:
+            print(f"Something went wrong. Could not delete article with slug ''{slug}'' from favorites. Response status code = {response.status_code}")
             return None, response
 
     def update_articles(self, slug, article_data: ArticleRequest = ArticleRequest(RequestType.update), token=None) -> tuple[Optional[ArticleBody], Response]:
@@ -115,7 +127,7 @@ class ArticlesApi:
             print(f"Something went wrong. Could not post the article. Response status code = {response.status_code}")
             return None, response
 
-    def delete_article(self, slug, token=None):
+    def delete_article(self, slug, token):
         headers = {"Authorization": f'Token {token}'}
         response = self.__client.delete_article(request_headers=headers, slug=slug)
         if response.status_code in [200, 204]:

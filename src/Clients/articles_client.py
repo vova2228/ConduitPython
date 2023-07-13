@@ -49,3 +49,8 @@ class ArticlesClient(BaseClient):
         response = self.__client.custom_request(
             "DELETE", f'{self.__get_articles_endpoint}/{slug}', headers=request_headers)
         return response
+
+    def delete_article_from_favorites(self, slug, request_body=None, request_headers=None):
+        response = self.__client.custom_request(
+            "DELETE", f'{self.__get_articles_endpoint}/{slug}/favorite', headers=request_headers)
+        return response

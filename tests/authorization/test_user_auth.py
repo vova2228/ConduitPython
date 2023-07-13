@@ -128,3 +128,5 @@ class TestAuth:
             tests.check_res_body_username(login_user, updated_user)
             tests.check_auth_response(
                 response, SuccesfullRegistration.expected_keys, SuccesfullRegistration.status_code)
+
+        ##TODO Добавить юзеру новые поля
