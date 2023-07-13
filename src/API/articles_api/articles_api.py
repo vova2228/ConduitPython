@@ -2,7 +2,6 @@ import json
 from typing import Optional
 import allure
 from requests import Response
-
 from API.articles_api.request_type import RequestType
 from src.models.article import ArticleBody, ArticleRequest
 from src.Clients.articles_client import ArticlesClient

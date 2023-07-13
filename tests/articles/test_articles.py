@@ -98,10 +98,12 @@ class TestArticles:
         with step("Create an article by token"):
             articles, response = articles_api.post_articles(token=token)
             slug = articles.articles.slug
+            creation_date = utils.convert_article_date(articles.articles.createdAt)
+            date_now = utils.get_now_date()
 
-        with step("Check that the response body has valid data"):
-            tests.check_articles_response(
-                response, SuccessfullPostArticle.expected_keys, SuccessfullPostArticle.status_code)
+        with step("Check that the response body has valid data and date article created at"):
+            tests.check_articles_response(response, SuccessfullPostArticle.expected_keys, SuccessfullPostArticle.status_code)
+            tests.check_dates_are_equal(date_now, creation_date)
 
         with step("Delete the article"):
             response = articles_api.delete_article(token=token, slug=slug)
@@ -125,6 +127,7 @@ class TestArticles:
         with step("Create an article by token"):
             articles, response = articles_api.post_articles(token=token)
             slug = articles.articles.slug
+            author_from_article = articles.articles.author.username
 
         with step('Get articles by author name'):
             articles_by_author, response = articles_api.get_articles_by_author(author, token)
@@ -132,6 +135,9 @@ class TestArticles:
         with step("Check that the response body has valid data"):
             tests.check_articles_response(
                 response, SuccessfullPostArticle.expected_keys, SuccessfullPostArticle.status_code)
+
+        with step("Compare the author from the response with the author when creating the article"):
+            tests.check_authors_are_equal(author, author_from_article)
 
         with step("Delete the article"):
             response = articles_api.delete_article(token=token, slug=slug)
@@ -185,7 +191,7 @@ class TestArticles:
             date_updated_at = utils.convert_article_date(new_article.articles.updatedAt)
             tests.check_articles_response(response, SuccessfullPostArticle.expected_keys, SuccessfullPostArticle.status_code)
 
-        with step("Check articles are not equal and dates"):
+        with step("Check articles are not equal and dates updated at"):
             tests.check_articles_are_not_equal(article_before_update, new_article)
             tests.check_dates_are_equal(now_date, date_updated_at)
 

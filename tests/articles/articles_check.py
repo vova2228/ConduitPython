@@ -76,3 +76,8 @@ class ArticlesTests(BaseCheck):
     def check_dates_are_equal(first_date, sec_date):
         print("Checking dates are equal...")
         assert first_date == sec_date, f"Date {first_date} != {sec_date}!!"
+
+    @staticmethod
+    def check_authors_are_equal(author, expected_author):
+        print("Checking authors are equal...")
+        assert author == expected_author, f"Author {author} != {expected_author}!!"
