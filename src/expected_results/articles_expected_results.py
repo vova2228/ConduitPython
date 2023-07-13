@@ -14,3 +14,10 @@ class SuccessfullPostArticle:
 class SuccessfullDeleteArticle:
     status_code = 204
     expected_text = ''
+
+
+class SuccessfullAddToFavorites:
+    status_code = 200
+    expected_keys = ["article", "slug", "title", "description", "body", "tagList", "createdAt",
+                     "updatedAt", "authorId", "author", "username", "bio", "image", "following",
+                     "favoritedBy"]

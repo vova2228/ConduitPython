@@ -1,8 +1,6 @@
 import random
-from datetime import datetime
-
 import pytz
-
+from datetime import datetime
 from src.API.authorization_api.request_type import RequestType
 from src.models.user import UserRequest
 

@@ -102,7 +102,8 @@ class TestArticles:
             date_now = utils.get_now_date()
 
         with step("Check that the response body has valid data and date article created at"):
-            tests.check_articles_response(response, SuccessfullPostArticle.expected_keys, SuccessfullPostArticle.status_code)
+            tests.check_articles_response(
+                response, SuccessfullPostArticle.expected_keys, SuccessfullPostArticle.status_code)
             tests.check_dates_are_equal(date_now, creation_date)
 
         with step("Delete the article"):
@@ -178,18 +179,21 @@ class TestArticles:
         with step("Create an article by token"):
             article_before_update, response = articles_api.post_articles(token=token)
             slug = article_before_update.articles.slug
-            tests.check_articles_response(response, SuccessfullPostArticle.expected_keys, SuccessfullGetArticle.status_code)
+            tests.check_articles_response(
+                response, SuccessfullPostArticle.expected_keys, SuccessfullGetArticle.status_code)
 
         with step(f"Update article with slug ''{slug}''"):
             updated_article, response = articles_api.update_articles(slug=slug, token=token)
             slug = updated_article.articles.slug
             now_date = utils.get_now_date()
-            tests.check_articles_response(response, SuccessfullPostArticle.expected_keys, SuccessfullPostArticle.status_code)
+            tests.check_articles_response(
+                response, SuccessfullPostArticle.expected_keys, SuccessfullPostArticle.status_code)
 
         with step(f"Get article with slug ''{slug}''"):
             new_article, response = articles_api.get_articles_by_slug(slug=slug, token=token)
             date_updated_at = utils.convert_article_date(new_article.articles.updatedAt)
-            tests.check_articles_response(response, SuccessfullPostArticle.expected_keys, SuccessfullPostArticle.status_code)
+            tests.check_articles_response(
+                response, SuccessfullPostArticle.expected_keys, SuccessfullPostArticle.status_code)
 
         with step("Check articles are not equal and dates updated at"):
             tests.check_articles_are_not_equal(article_before_update, new_article)
@@ -197,8 +201,37 @@ class TestArticles:
 
         with step("Delete article"):
             response = articles_api.delete_article(slug=slug, token=token)
-            tests.check_articles_response(response, SuccessfullDeleteArticle.expected_text, SuccessfullDeleteArticle.status_code)
+            tests.check_articles_response(
+                response, SuccessfullDeleteArticle.expected_text, SuccessfullDeleteArticle.status_code)
 
         with step("Check article was deleted"):
             tests.check_article_was_deleted(author, token)
 
+    @allure.title("Add article to favorites")
+    @pytest.mark.order(9)
+    def test_add_article_to_favorites(self):
+        random_offset = random.randint(1, 19)
+        with step("Get the user from the file"):
+            user = utils.get_user(RequestType.login, is_random=False)
+
+        with step("Log in and get the token"):
+            login_user, response = auth_api.login_user(user)
+            token = login_user.token
+            author = login_user.username
+
+        with step("Get all articles"):
+            articles, response = articles_api.get_articles(token=token, limit=10, offset=random_offset)
+
+            slugs = []
+            for article in articles.articles:
+                slugs.append(article.slug)
+
+            random_slug = random.choice(slugs)
+
+        with step(f"Add article with slug ''{random_slug}'' to favorites"):
+            articles, response = articles_api.add_article_to_favorite(slug=random_slug, token=token)
+            tests.check_articles_response(response, SuccessfullAddToFavorites.expected_keys, SuccessfullAddToFavorites.status_code)
+
+        with step("Check article was added to favorites"):
+            articles, response = articles_api.get_articles_by_slug(slug=random_slug, token=token)
+            tests.check_article_is_favorited(articles)

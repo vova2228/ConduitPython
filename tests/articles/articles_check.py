@@ -81,3 +81,13 @@ class ArticlesTests(BaseCheck):
     def check_authors_are_equal(author, expected_author):
         print("Checking authors are equal...")
         assert author == expected_author, f"Author {author} != {expected_author}!!"
+
+    @staticmethod
+    def check_slugs_are_equal(slug, expected_slug):
+        print("Checking slugs are equal...")
+        assert slug == expected_slug, f"Slug {slug} != {expected_slug}!!"
+
+    @staticmethod
+    def check_article_is_favorited(articles):
+        print("Checking article was favorited...")
+        assert articles.articles.favorited is True, f"Article with slug ''{articles.articles.slug}'' was not added to Favorites"

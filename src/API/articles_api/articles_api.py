@@ -86,6 +86,18 @@ class ArticlesApi:
             print(f"Something went wrong. Could not post the article. Response status code = {response.status_code}")
             return None, response
 
+    def add_article_to_favorite(self, slug, token) -> tuple[Optional[ArticleBody], Response]:
+        headers = {"Authorization": f'Token {token}'}
+        response = self.__client.post_article(request_headers=headers, slug=slug)
+        allure.attach(str(response.text), 'response', allure.attachment_type.TEXT)
+        try:
+            articles = self.__deserializer.deserialize(response.json(), ArticleBody)
+            print("Article added to favorites")
+            return articles, response
+        except KeyError:
+            print(f"Something went wrong. Could not add article to favorites. Response status code = {response.status_code}")
+            return None, response
+
     def update_articles(self, slug, article_data: ArticleRequest = ArticleRequest(RequestType.update), token=None) -> tuple[Optional[ArticleBody], Response]:
         if token is not None:
             print(f"\nUpdating an article ''{slug}'' with a token...")
