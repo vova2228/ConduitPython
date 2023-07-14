@@ -118,7 +118,7 @@ class TestAuth:
             login_user, response = auth_api.login_user(user)
             token = login_user.token
 
-        with step("Generate a new email"):
+        with step("Generate a new email and bio"):
             user_for_update = utils.get_user(RequestType.update)
 
         with step("Update the user"):
@@ -128,5 +128,3 @@ class TestAuth:
             tests.check_res_body_username(login_user, updated_user)
             tests.check_auth_response(
                 response, SuccesfullRegistration.expected_keys, SuccesfullRegistration.status_code)
-
-        ##TODO Добавить юзеру новые поля

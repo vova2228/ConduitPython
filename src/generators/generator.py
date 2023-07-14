@@ -3,10 +3,16 @@ import string
 
 letters = string.ascii_lowercase
 digits = string.digits
+bios = [
+    "I love to code in Python!",
+    "Software engineer and coffee addict",
+    "Traveller and bookworm",
+    "Foodie. Yoga enthusiast. Dog mom.",
+    "Lifelong learner and problem solver"
+]
 
 
 class TestDataGenerator:
-
     """
     Generates random test data.
 
@@ -21,7 +27,8 @@ class TestDataGenerator:
         email = self.generate_email(length)
         password = self.generate_password(length)
         username = self.generate_username(length)
-        return email, password, username
+        bio = self.generate_bio()
+        return email, password, username, bio
 
     @classmethod
     def generate_email(cls, length=8):
@@ -39,3 +46,15 @@ class TestDataGenerator:
     def generate_username(cls, length=8):
         username = ''.join(random.choices(letters, k=length))
         return username
+
+    @classmethod
+    def generate_bio(cls, length=20):
+
+        bio = random.choice(bios)
+        if len(bio) < length:
+            extra = "".join(random.choices(string.ascii_lowercase, k=length - len(bio)))
+            bio += " " + extra
+        elif len(bio) > length:
+            bio = bio[:length]
+
+        return bio

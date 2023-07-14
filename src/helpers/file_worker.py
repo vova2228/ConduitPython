@@ -13,8 +13,8 @@ class FileWorker:
         __articles_file_path (str): Path to articles Excel file.
     """
 
-    __users_file_path = 'C:/Users/narut/Desktop/Idea/ConduitPython/tests/data/registered_users.xlsx'
-    __articles_file_path = 'C:/Users/narut/Desktop/Idea/ConduitPython/tests/data/articles.xlsx'
+    __users_file_path = 'C:/Users/vorudyh/Desktop/Progs/ConduitPython/tests/data/registered_users.xlsx'
+    __articles_file_path = 'C:/Users/vorudyh/Desktop/Progs/ConduitPython/tests/data/articles.xlsx'
 
     @classmethod
     def insert_new_user_to_file(cls, users_count: int):
@@ -43,6 +43,7 @@ class FileWorker:
         sheet[f'A{index}'] = TestDataGenerator.generate_email(random_length)
         sheet[f'B{index}'] = TestDataGenerator.generate_password(random_length)
         sheet[f'C{index}'] = TestDataGenerator.generate_username(random_length)
+        sheet[f'D{index}'] = TestDataGenerator.generate_bio()
 
     @classmethod
     def initialize_users_sheet(cls):
@@ -69,18 +70,21 @@ class FileWorker:
         email = sheet.cell(row=index, column=1).value
         password = sheet.cell(row=index, column=2).value
         username = sheet.cell(row=index, column=3).value
+        bio = sheet.cell(row=index, column=4).value
 
-        return email, password, username
+        return email, password, username, bio
 
     @classmethod
-    def insert_new_email_for_user(cls, old_email, new_email):
+    def insert_new_email_and_bio_for_user(cls, old_email, new_email, old_bio, new_bio):
         sheet = cls.initialize_users_sheet()
         filled_rows = sheet.max_row
 
         for i in range(1, filled_rows + 1):
             current_email = sheet[f'A{i}'].value
-            if current_email == old_email:
+            current_bio = sheet[f'D{i}'].value
+            if current_email == old_email and current_bio == old_bio:
                 sheet[f'A{i}'].value = new_email
+                sheet[f'D{i}'].value = new_bio
                 sheet.parent.save(cls.__users_file_path)
                 return True
         return False

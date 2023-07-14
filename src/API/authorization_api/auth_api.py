@@ -59,12 +59,14 @@ class AuthAPI:
         headers = {"Authorization": f'Token {token}'}
         request_body = json.loads(user.body)
         old_email = self.get_current_user(token)[0].email
+        old_bio = self.get_current_user(token)[0].bio
         response = self.__client.update_user(request_body, request_headers=headers)
         allure.attach(str(response.text), 'response', allure.attachment_type.TEXT)
         try:
             user = self.__deserializer.deserialize(response.json()['user'], UserBody)
             print("User Updated\n")
-            was_updated = FileWorker.insert_new_email_for_user(old_email, request_body['user']['email'])
+            was_updated = FileWorker.insert_new_email_and_bio_for_user(old_email, request_body['user']['email'],
+                                                                       old_bio, request_body['user']['bio'])
             if was_updated:
                 print(f"The user's email {old_email} in the file was updated to {request_body['user']['email']}\n")
             else:

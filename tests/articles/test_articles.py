@@ -229,18 +229,16 @@ class TestArticles:
 
         with step(f"Add article with slug ''{random_slug}'' to favorites"):
             articles, response = articles_api.add_article_to_favorites(slug=random_slug, token=token)
-            tests.check_articles_response(response, SuccessfullAddToFavorites.expected_keys, SuccessfullAddToFavorites.status_code)
-            tests.check_article_is_favorited(articles)
+            tests.check_articles_response(
+                response, SuccessfullAddToFavorites.expected_keys, SuccessfullAddToFavorites.status_code)
+            tests.check_favorited(articles.articles, True)
 
         with step("Check article was added to favorites"):
-            articles, response = articles_api.get_articles_by_slug(slug=random_slug, token=token)
-            tests.check_article_is_favorited(articles)
+            tests.check_article_was_added_to_favorites(slug=random_slug, token=token)
 
         with step("Delete article from favorites"):
-            articles, response = articles_api.delete_article_from_favorites(slug=random_slug, token=token)
+            articles_api.delete_article_from_favorites(slug=random_slug, token=token)
 
         with step("Check article was deleted from favorites"):
-            tests.check_article_is_not_favorite(articles)
-
-        ##TODO Перенести тестовые запросы в article_check
+            tests.check_article_was_deleted_from_favorites(slug=random_slug, token=token)
 

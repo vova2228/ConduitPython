@@ -28,13 +28,15 @@ class UserRequestModel(BaseModel):
     email: Optional[str] = None
     password: Optional[str] = None
     username: Optional[str] = None
+    bio: Optional[str] = None
 
     @staticmethod
     def create_random_user():
         return UserRequestModel(
             email=TestDataGenerator.generate_email(),
             password=TestDataGenerator.generate_password(),
-            username=TestDataGenerator.generate_username()
+            username=TestDataGenerator.generate_username(),
+            bio=TestDataGenerator.generate_bio()
         )
 
     @staticmethod
@@ -43,17 +45,20 @@ class UserRequestModel(BaseModel):
         return UserRequestModel(
             email=user_info[0],
             password=user_info[1],
-            username=user_info[2]
+            username=user_info[2],
+            bio=user_info[3]
         )
 
 
 class UpdateUserRequestModel(BaseModel):
     email: Optional[str]
+    bio: Optional[str]
 
     @staticmethod
-    def get_new_email():
+    def get_new_email_and_bio():
         return UpdateUserRequestModel(
-            email=TestDataGenerator.generate_email()
+            email=TestDataGenerator.generate_email(),
+            bio=TestDataGenerator.generate_bio()
         )
 
 
@@ -74,9 +79,10 @@ class UserRequest:
 
     def __init__(self, types: RequestType, is_random: bool = True):
         if types == RequestType.update:
-            self.body = RequestModel(user=UpdateUserRequestModel.get_new_email()).create_body()
+            self.body = RequestModel(user=UpdateUserRequestModel.get_new_email_and_bio()).create_body()
         if types == RequestType.register or types == RequestType.login:
             if is_random:
                 self.body = RequestModel(user=UserRequestModel.create_random_user()).create_body()
             else:
                 self.body = RequestModel(user=UserRequestModel.get_user_from_file()).create_body()
+

@@ -5,7 +5,6 @@ from src.models.user import UserBody
 
 
 class AuthCheck(BaseCheck):
-
     """
     Contains authentication test methods.
 
@@ -48,8 +47,6 @@ class AuthCheck(BaseCheck):
         cls.check_res_body_email(first_user, sec_user)
         cls.check_res_body_username(first_user, sec_user)
 
-
-
     @classmethod
     def check_res_body_username(cls, first_user: UserBody, sec_user: UserBody):
 
@@ -64,7 +61,6 @@ class AuthCheck(BaseCheck):
         print(f"Check that {first_user.username} == {sec_user.username}")
         assert first_user.username == sec_user.username, f"The username of the first user {first_user.username} is not equal to the username of the second {sec_user.username}"
 
-
     @classmethod
     def check_res_body_email(cls, first_user: UserBody, sec_user: UserBody):
 
@@ -78,4 +74,3 @@ class AuthCheck(BaseCheck):
 
         print(f"Check that {first_user.email} == {sec_user.email}")
         assert first_user.email == sec_user.email, f"The email of the first user {first_user.email} is not equal to the email of the second {sec_user.email}"
-

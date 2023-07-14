@@ -8,6 +8,14 @@ file_path = "../tests/data/registered_users.xlsx"
 register_endpoint = "https://api.realworld.io/api/users"
 login_endpoint = "https://api.realworld.io/api/users/login"
 
+bios = [
+    "I love to code in Python!",
+    "Software engineer and coffee addict",
+    "Traveller and bookworm",
+    "Foodie. Yoga enthusiast. Dog mom.",
+    "Lifelong learner and problem solver"
+]
+
 
 def initialize_sheet():
     workbook = load_workbook(filename=file_path)
@@ -65,10 +73,22 @@ def generate_username(length):
     return username
 
 
+def generate_bio(length=20):
+    bio = random.choice(bios)
+    if len(bio) < length:
+        extra = "".join(random.choices(string.ascii_lowercase, k=length - len(bio)))
+        bio += " " + extra
+    elif len(bio) > length:
+        bio = bio[:length]
+
+    return bio
+
+
 def add_user_to_sheet(sheet, index, length):
     sheet[f'A{index}'] = generate_email(length)
     sheet[f'B{index}'] = generate_password(length)
     sheet[f'C{index}'] = generate_username(length)
+    sheet[f'D{index}'] = generate_bio(length)
 
 
 def register_users_from_file():
@@ -81,11 +101,13 @@ def register_users_from_file():
         email = sheet[f'A{index}'].value
         password = sheet[f'B{index}'].value
         username = sheet[f'C{index}'].value
+        bio = sheet[f'D{index}'].value
         request_body = {
             "user": {
                 "email": email,
                 "password": password,
-                "username": username
+                "username": username,
+                "bio": bio
             }
         }
         response = requests.post(register_endpoint, json=request_body)

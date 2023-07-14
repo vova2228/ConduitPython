@@ -87,13 +87,22 @@ class ArticlesTests(BaseCheck):
         print("Checking slugs are equal...")
         assert slug == expected_slug, f"Slug {slug} != {expected_slug}!!"
 
-    @staticmethod
-    def check_article_is_favorited(articles):
+    @classmethod
+    def check_favorited(cls, article, expected):
         print("Checking flag favorited in response...")
-        assert articles.articles.favorited is True, f"Article with slug ''{articles.articles.slug}'' was not added to Favorites"
+        favorited = article.favorited
+        assert favorited is expected, f"Article with slug '{article.slug}' was {'not ' if not expected else ''} added to Favorites"
 
-    @staticmethod
-    def check_article_is_not_favorite(articles):
-        print("Checking flag favorited in response...")
-        assert articles.articles.favorited is False, f"Article with slug ''{articles.articles.slug}'' was not deleted from Favorites"
+    @classmethod
+    def check_article_was_added_to_favorites(cls, slug, token):
+        print(f"Checking article with {slug} was added to favorites...")
+        articles, response = articles_api.get_articles_by_slug(slug=slug, token=token)
+        cls.check_favorited(articles.articles, True)
+
+    @classmethod
+    def check_article_was_deleted_from_favorites(cls, slug, token):
+        print(f"Checking article with {slug} was deleted from favorites...")
+        articles, response = articles_api.get_articles_by_slug(slug=slug, token=token)
+        cls.check_favorited(articles.articles, False)
+
 
