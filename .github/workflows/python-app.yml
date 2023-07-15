@@ -20,7 +20,7 @@ jobs:
     
     defaults:
       run:
-        working-directory: ./ConduitPython
+        working-directory: ./
 
     steps:
     - uses: actions/checkout@v3
