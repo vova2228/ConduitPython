@@ -41,8 +41,9 @@ jobs:
         pip install -r requirements.txt        
     - name: Run pytest
       run: | 
-        python -m pytest --alluredir=allure-report
+        python -m pytest
     - name: Commit and push changes
+      if: always()
       run: |
           git config --global user.name "vova2228"
           git config --global user.email "narutou944@yahoo.com"
