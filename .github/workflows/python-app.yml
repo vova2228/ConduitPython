@@ -45,9 +45,9 @@ jobs:
     - name: Commit and push changes
       if: always()
       run: |
-          git config --global user.name "vova2228"
-          git config --global user.email "narutou944@yahoo.com"
-          git remote set-url origin "https://${{ secrets.TOKEN }}@github.com//vova2228/ConduitPython.git"
+          git remote set-url origin https://${{secrets.TOKEN}}@github.com/vova2228/ConduitPython.git
+          git config --global user.name "${{github.actor}}"
+          git config --global user.email "${{github.actor}}@users.noreply.github.com"
           git add tests/data
           git commit -m "Updated test data"
           git push
