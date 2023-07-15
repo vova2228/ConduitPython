@@ -41,7 +41,7 @@ jobs:
         pip install -r requirements.txt        
     - name: Run pytest
       run: | 
-        pytest --alluredir=allure-report
+        python -m pytest --alluredir=allure-report
     - name: Serve allure report
       run: |
           allure-serve .\allure-report\
