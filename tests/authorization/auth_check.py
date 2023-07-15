@@ -1,7 +1,7 @@
 from requests import Response
 
-from tests.basic_check import BaseCheck
 from src.models.user import UserBody
+from tests.basic_check import BaseCheck
 
 
 class AuthCheck(BaseCheck):

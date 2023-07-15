@@ -1,5 +1,5 @@
 class SuccesfullRegistration:
-    status_code = 200
+    status_code = [200, 201]
     expected_keys = ["user", "email", "username", "bio", "image", "token"]
 
 

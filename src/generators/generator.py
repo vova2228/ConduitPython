@@ -11,6 +11,19 @@ bios = [
     "Lifelong learner and problem solver"
 ]
 
+comments = [
+    "Nice",
+    "Great",
+    "Awesome",
+    "Terrific",
+    "Excellent",
+    "Superb",
+    "Brilliant",
+    "Wonderful",
+    "Amazing",
+    "Interesting"
+]
+
 
 class TestDataGenerator:
     """
@@ -22,6 +35,10 @@ class TestDataGenerator:
         generate_password(length): Generates random password.
         generate_username(length): Generates random username.
     """
+
+    @staticmethod
+    def get_random_comment():
+        return random.choice(comments)
 
     def generate_user_data(self, length=8):
         email = self.generate_email(length)

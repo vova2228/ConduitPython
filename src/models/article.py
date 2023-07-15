@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Any, List, Optional, Union
 from pydantic import BaseModel
-from API.articles_api.request_type import RequestType
+from src.API.articles_api.request_type import RequestType
 from src.helpers.file_worker import FileWorker
 
 

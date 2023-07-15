@@ -17,7 +17,7 @@ class AuthAPI:
         print("\nRegistering a user...")
         request_body = json.loads(user.body)
         response = self.__client.register(request_body)
-        allure.attach(str(response.text), 'response', allure.attachment_type.TEXT)
+        allure.attach(str(response.text), 'register user response', allure.attachment_type.TEXT)
         try:
             registered_user = self.__deserializer.deserialize(response.json()['user'], UserBody)
             if type(registered_user) is UserBody:
@@ -31,7 +31,7 @@ class AuthAPI:
         print("\nLogging in...")
         request_body = json.loads(user.body)
         response = self.__client.login(request_body)
-        allure.attach(str(response.text), 'response', allure.attachment_type.TEXT)
+        allure.attach(str(response.text), 'login user response', allure.attachment_type.TEXT)
         try:
             authorized_user: UserBody = self.__deserializer.deserialize(response.json()['user'], UserBody)
             print("User authorized\n")
@@ -45,7 +45,7 @@ class AuthAPI:
         print("\nGetting the current user...")
         headers = {"Authorization": f'Token {token}'}
         response = cls.__client.get_user(request_headers=headers)
-        allure.attach(str(response.text), 'response', allure.attachment_type.TEXT)
+        allure.attach(str(response.text), 'get current user response', allure.attachment_type.TEXT)
         try:
             current_user = cls.__deserializer.deserialize(response.json()['user'], UserBody)
             print("User received\n")
@@ -58,10 +58,11 @@ class AuthAPI:
         print("\nUpdating the user...")
         headers = {"Authorization": f'Token {token}'}
         request_body = json.loads(user.body)
-        old_email = self.get_current_user(token)[0].email
-        old_bio = self.get_current_user(token)[0].bio
+        current_user, _ = self.get_current_user(token)
+        old_email = current_user.email
+        old_bio = current_user.bio
         response = self.__client.update_user(request_body, request_headers=headers)
-        allure.attach(str(response.text), 'response', allure.attachment_type.TEXT)
+        allure.attach(str(response.text), 'update user response', allure.attachment_type.TEXT)
         try:
             user = self.__deserializer.deserialize(response.json()['user'], UserBody)
             print("User Updated\n")

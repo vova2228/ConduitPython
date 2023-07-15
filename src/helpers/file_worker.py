@@ -13,8 +13,8 @@ class FileWorker:
         __articles_file_path (str): Path to articles Excel file.
     """
 
-    __users_file_path = 'C:/Users/vorudyh/Desktop/Progs/ConduitPython/tests/data/registered_users.xlsx'
-    __articles_file_path = 'C:/Users/vorudyh/Desktop/Progs/ConduitPython/tests/data/articles.xlsx'
+    __users_file_path = 'tests/data/registered_users.xlsx'
+    __articles_file_path = 'tests/data/articles.xlsx'
 
     @classmethod
     def insert_new_user_to_file(cls, users_count: int):

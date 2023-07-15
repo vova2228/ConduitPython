@@ -28,7 +28,8 @@ class ArticlesClient(BaseClient):
             response = self.__client.custom_request("GET", endpoint, headers=headers, params=query_params)
             return response
 
-        response = self.__client.custom_request("GET", self.__get_articles_endpoint, headers=headers, params=query_params)
+        response = self.__client.custom_request("GET", self.__get_articles_endpoint, headers=headers,
+                                                params=query_params)
         return response
 
     def update_article(self, slug, request_body=None, request_headers=None):
@@ -39,7 +40,8 @@ class ArticlesClient(BaseClient):
     def post_article(self, request_body=None, request_headers=None, **kwargs):
         if "slug" in kwargs:
             response = self.__client.custom_request(
-                "POST", f'{self.__post_articles_endpoint}/{kwargs.get("slug")}/favorite', headers=request_headers, json=request_body)
+                "POST", f'{self.__post_articles_endpoint}/{kwargs.get("slug")}/favorite', headers=request_headers,
+                json=request_body)
             return response
         response = self.__client.custom_request(
             "POST", self.__get_articles_endpoint, headers=request_headers, json=request_body)
@@ -53,4 +55,17 @@ class ArticlesClient(BaseClient):
     def delete_article_from_favorites(self, slug, request_body=None, request_headers=None):
         response = self.__client.custom_request(
             "DELETE", f'{self.__get_articles_endpoint}/{slug}/favorite', headers=request_headers)
+        return response
+
+    def get_article_comments(self, slug, request_headers):
+        response = self.__client.custom_request("GET", f'{self.__get_articles_endpoint}/{slug}/comments', headers=request_headers)
+        return response
+
+    def post_article_comment(self, slug, request_body, request_headers):
+        response = self.__client.custom_request("POST", f'{self.__get_articles_endpoint}/{slug}/comments',
+                                                headers=request_headers, json=request_body)
+        return response
+
+    def delete_article_comment(self, slug, comment_id, request_headers):
+        response = self.__client.custom_request("DELETE", f'{self.__get_articles_endpoint}/{slug}/comments/{comment_id}', headers=request_headers)
         return response

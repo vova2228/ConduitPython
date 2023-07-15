@@ -105,4 +105,16 @@ class ArticlesTests(BaseCheck):
         articles, response = articles_api.get_articles_by_slug(slug=slug, token=token)
         cls.check_favorited(articles.articles, False)
 
+    @classmethod
+    def check_comments_are_equal(cls, comment, expected_comment):
+        print(f"Checking articles comments ''{comment}'' and ''{expected_comment}'' are equal...")
+        assert comment == expected_comment, f"Comment {comment} is not equal {expected_comment}"
+
+    @classmethod
+    def check_comment_was_deleted(cls, slug, token):
+        print(f"Checking comments for article ''{slug}'' was deleted")
+        comments, _ = articles_api.get_article_comments(slug=slug, token=token)
+        for comment in comments.comments:
+            assert comment is None, f"Comment for article ''{slug}'' was not deleted!!"
+
 
