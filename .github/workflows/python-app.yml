@@ -38,6 +38,6 @@ jobs:
       if: always()
       run: |
           git remote set-url origin https://${{secrets.TOKEN}}@github.com/vova2228/ConduitPython.git
-          git add .\tests\data\registered_users.xlsx
+          git add ./tests/data/registered_users.xlsx
           git commit -m "Updated test data"
           git push
