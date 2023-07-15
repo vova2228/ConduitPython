@@ -54,6 +54,6 @@ jobs:
       run: |
           git config --global user.name "vova2228"
           git config --global user.email "narutou944@yahoo.com"
-          git add -A
+          git add tests/data
           git commit -m "Updated test data"
           git push
