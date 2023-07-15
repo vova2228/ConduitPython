@@ -36,6 +36,10 @@ jobs:
         python -m pytest
     - name: Commit and push changes
       if: always()
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.TOKEN }}
+        repository: https://${{secrets.TOKEN}}@github.com/vova2228/ConduitPython.git
       run: |
           git remote set-url origin https://${{secrets.TOKEN}}@github.com/vova2228/ConduitPython.git
           git config --global user.email "narutou944@yahoo.com"
