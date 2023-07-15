@@ -34,16 +34,16 @@ jobs:
     - name: Run pytest
       run: | 
         python -m pytest
-    - name: Commit and push changes
+    - name: Commit files
       if: always()
-      uses: ad-m/github-push-action@master
-      with:
-        github_token: ${{ secrets.TOKEN }}
-        repository: https://${{secrets.TOKEN}}@github.com/vova2228/ConduitPython.git
       run: |
-          git remote set-url origin https://${{secrets.TOKEN}}@github.com/vova2228/ConduitPython.git
-          git config --global user.email "narutou944@yahoo.com"
-          git config --global user.name "vova2228"
+          git config --local user.email "narutou944@yahoo.com"
+          git config --local user.name "vova2228"
           git add ./tests/data/registered_users.xlsx
           git commit -m "Updated test data"
-          git push
+    - name: Push changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: ${{ github.master }}
+      
