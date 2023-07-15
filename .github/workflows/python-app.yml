@@ -47,6 +47,7 @@ jobs:
       run: |
           git config --global user.name "vova2228"
           git config --global user.email "narutou944@yahoo.com"
+          git remote set-url origin "https://${{ secrets.TOKEN }}@github.com//vova2228/ConduitPython.git"
           git add tests/data
           git commit -m "Updated test data"
           git push
