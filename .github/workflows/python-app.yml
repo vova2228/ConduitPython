@@ -38,6 +38,8 @@ jobs:
       if: always()
       run: |
           git remote set-url origin https://${{secrets.TOKEN}}@github.com/vova2228/ConduitPython.git
+          git config --global user.email "narutou944@yahoo.com"
+          git config --global user.name "vova2228"
           git add ./tests/data/registered_users.xlsx
           git commit -m "Updated test data"
           git push
