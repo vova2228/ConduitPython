@@ -50,3 +50,10 @@ jobs:
       with:
           name: allure-results
           path: output/allure/results.html
+    - name: Commit and push changes
+      run: |
+          git config --global user.name "vova2228"
+          git config --global user.email "narutou944@yahoo.com"
+          git add -A
+          git commit -m "Updated test data"
+          git push
