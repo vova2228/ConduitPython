@@ -44,4 +44,9 @@ jobs:
         python -m pytest --alluredir=allure-report
     - name: Serve allure report
       run: |
-          allure-serve .\allure-report\
+          allure serve /allure-report
+    - name: Serve allure report
+      uses: actions/upload-artifact@v3
+      with:
+          name: allure-results
+          path: output/allure/results.html
