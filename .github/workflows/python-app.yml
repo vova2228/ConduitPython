@@ -30,7 +30,7 @@ jobs:
         pip install -r requirements.txt
     - name: Run Python Script
       run: |
-        python .\scripts\ready_for_testing.py "1"
+        python ./scripts/ready_for_testing.py "1"
     - name: Run pytest
       run: | 
         python -m pytest
