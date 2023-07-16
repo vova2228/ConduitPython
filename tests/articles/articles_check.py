@@ -2,23 +2,11 @@ from requests import Response
 from src.API.articles_api.articles_api import ArticlesApi
 from tests.basic_check import BaseCheck
 
-articles_api = ArticlesApi()
-
 
 class ArticlesTests(BaseCheck):
 
     @classmethod
     def check_articles_response(cls, response: Response, expected_text: list | str, expected_status_code):
-
-        """
-        Checks that an API response contains expected text and has an expected status code.
-
-        Args:
-            response (Response): The API response.
-            expected_text (list | str): The expected text in the response body. Can be a list of keys or a string.
-            expected_status_code (int): The expected HTTP status code of the response.
-        """
-
         print("Checking the response body...")
         if isinstance(expected_text, list):
             for key in expected_text:
@@ -31,31 +19,13 @@ class ArticlesTests(BaseCheck):
 
     @classmethod
     def check_response_article_count(cls, expected_count, actual_count):
-
-        """
-        Checks that the number of articles in an API response matches an expected count.
-
-        Args:
-            expected_count (int): The expected number of articles in the response.
-            actual_count (int): The actual number of articles in the response.
-        """
-
         print(
             f"Check that the number of requested articles {expected_count} = the number of received articles {actual_count}")
         assert expected_count == actual_count, f"The number of articles in the response should be equal to {expected_count}, but the number = {actual_count}"
 
     @classmethod
     def check_article_was_deleted(cls, author, token):
-
-        """
-       Checks if an article for a given author has been deleted.
-
-       Args:
-           author (str): The username of the article's author.
-           token (str): The authentication token.
-       """
-
-        articles, response = articles_api.get_articles_by_author(author, token)
+        articles, response = ArticlesApi().get_articles_by_author(author, token)
         assert articles.articlesCount == 0, f"The article for ''{author}'' was not deleted!!"
         print(f"Article for ''{author}'' was deleted")
         cls.check_status_code(response, 200)
@@ -96,13 +66,13 @@ class ArticlesTests(BaseCheck):
     @classmethod
     def check_article_was_added_to_favorites(cls, slug, token):
         print(f"Checking article with {slug} was added to favorites...")
-        articles, response = articles_api.get_articles_by_slug(slug=slug, token=token)
+        articles, response = ArticlesApi().get_articles_by_slug(slug=slug, token=token)
         cls.check_favorited(articles.articles, True)
 
     @classmethod
     def check_article_was_deleted_from_favorites(cls, slug, token):
         print(f"Checking article with {slug} was deleted from favorites...")
-        articles, response = articles_api.get_articles_by_slug(slug=slug, token=token)
+        articles, response = ArticlesApi().get_articles_by_slug(slug=slug, token=token)
         cls.check_favorited(articles.articles, False)
 
     @classmethod
@@ -113,7 +83,7 @@ class ArticlesTests(BaseCheck):
     @classmethod
     def check_comment_was_deleted(cls, slug, token):
         print(f"Checking comments for article ''{slug}'' was deleted")
-        comments, _ = articles_api.get_article_comments(slug=slug, token=token)
+        comments, _ = ArticlesApi().get_article_comments(slug=slug, token=token)
         for comment in comments.comments:
             assert comment is None, f"Comment for article ''{slug}'' was not deleted!!"
 
