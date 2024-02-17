@@ -170,7 +170,7 @@ def main():
         clear_file()
         print("File cleared")
     elif user_input == "3":
-        print("Checking if users are registered...")
+        print("Checking if users are registered..")
         unregistered_users = check_users_in_file_are_registered()
         print("The number of unregistered users = ", unregistered_users)
     elif user_input == "4":
